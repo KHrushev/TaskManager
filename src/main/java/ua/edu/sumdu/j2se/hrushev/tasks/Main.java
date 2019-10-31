@@ -1,26 +1,14 @@
 package ua.edu.sumdu.j2se.hrushev.tasks;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 
-/**
- * Main utility class.
- * Marked final and created private constructor
- * so other classes cannot extend it.
- */
-
 public final class Main {
-    /**
-     * Main method. Program starting point
-     *
-     * @param args array of String objects
-     */
     public static void main(final String[] args) {
         BufferedReader reader = new BufferedReader(
                 new InputStreamReader(System.in));
 
-        String userTitle;
+        /*String userTitle;
         int userStartTime;
         int userEndTime;
         int userInterval;
@@ -58,12 +46,30 @@ public final class Main {
                     + " be greater than 0. "
                     + "End time has to"
                     + " be greater than start time.");
-        }
+        }*/
 
+        Task test = new Task("Task Title", 5, 25, 3);
+
+        test.setTime(42);
+
+	    System.out.println(test.getTitle());
+	    System.out.println(test.getStartTime()  + " startime");
+	    System.out.println(test.getEndTime() + " endtime");
+	    System.out.println(test.getRepeatInterval() + " repeatint");
+	    System.out.println(test.getTime() + " time");
+	    System.out.println(test.isRepeated() + " isRepeated");
+	    System.out.println(test.isActive() + " isActive\n");
+
+//	    test.setTime(5, 25, 3);
+//
+//	    System.out.println(test.getTitle());
+//	    System.out.println(test.getStartTime()  + " startime");
+//	    System.out.println(test.getEndTime() + " endtime");
+//	    System.out.println(test.getRepeatInterval() + " repeatint");
+//	    System.out.println(test.getTime() + " time");
+//	    System.out.println(test.isRepeated() + " isRepeated");
+//	    System.out.println(test.isActive() + " isActive");
     }
 
-    /**
-     * Private constructor so other classes cannot extend Main class.
-     */
     private Main() { }
 }

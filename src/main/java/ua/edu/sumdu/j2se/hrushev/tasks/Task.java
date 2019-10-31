@@ -5,29 +5,12 @@ package ua.edu.sumdu.j2se.hrushev.tasks;
  */
 
 public class Task {
-    /**
-     * title is the task name.
-     */
+
     private String title;
-    /**
-     * time is start time for non-repeatable tasks.
-     */
     private int time;
-    /**
-     * start is the start time for repeatable tasks.
-     */
     private int start;
-    /**
-     * end is the end time for repetition of given task.
-     */
     private int end;
-    /**
-     * interval is interval between repetitions of repetable task.
-     */
     private int interval;
-    /**
-     * current status of a task.
-     */
     private boolean isActive;
 
     /** Constructor for non-repeatable task.
@@ -85,10 +68,10 @@ public class Task {
 
     /**
      * Setter for isActive field.
-     * @param uActive sets new activity status.
+     * @param active sets new activity status.
      */
-    public final void setActive(final boolean uActive) {
-        isActive = uActive;
+    public final void setActive(final boolean active) {
+        isActive = active;
     }
 
     /**
@@ -112,8 +95,10 @@ public class Task {
      */
 
     public final void setTime(final int uTime) {
-        if (interval == 0) {
+        if (interval != 0) {
             this.interval = 0;
+            this.start = uTime;
+            this.end = uTime;
         }
 
         this.time = uTime;
@@ -184,7 +169,7 @@ public class Task {
      */
 
     public final boolean isRepeated() {
-        return interval > 0;
+        return interval > 0 && start != end;
     }
 
     /**
@@ -203,7 +188,7 @@ public class Task {
      */
 
     public final int nextTimeAfter(final int current) {
-        if ((current > this.time && interval == 0)
+        if (((current > this.time && interval == 0) || !this.isActive)
                 || (current > this.end && this.interval != 0)) {
             return -1;
         } else {
