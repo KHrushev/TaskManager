@@ -1,8 +1,6 @@
 package ua.edu.sumdu.j2se.hrushev.tasks;
 
-/**
- * Task class.
- */
+import java.util.Objects;
 
 public class Task {
 
@@ -208,5 +206,38 @@ public class Task {
                 return time;
             }
         }
+    }
+
+    /**
+     * Override method equals so it compares
+     * objects values, instead of addresses.
+     * @param o Object thats is being compared
+     * @return true if all values are equal between
+     * compared objects, false if they are not.
+     */
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Task)) {
+            return false;
+        }
+        Task task = (Task) o;
+        return time == task.time
+                && start == task.start
+                && end == task.end
+                && interval == task.interval
+                && isActive == task.isActive
+                && title.equals(task.title);
+    }
+
+    /**
+     * hashCode override.
+     * @return
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(title, time, start, end, interval, isActive);
     }
 }
