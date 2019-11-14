@@ -12,30 +12,30 @@ public class Task {
     private boolean isActive;
 
     /** Constructor for non-repeatable task.
-     * @param uTitle sets the title of a task.
-     * @param uTime time sets the time of task execution.
+     * @param title sets the title of a task.
+     * @param time time sets the time of task execution.
      */
 
-    public Task(final String uTitle, final int uTime) {
-        this.title = uTitle;
-        this.time = uTime;
+    public Task(String title, int time) {
+        this.title = title;
+        this.time = time;
         isActive = false;
     }
 
     /** Constructor for repeatable task.
      *
-     * @param uTitle sets the title of a task.
-     * @param uStart sets starting time of task execution.
-     * @param uEnd sets time for ending of task execution.
-     * @param uInterval sets interval between task repeats.
+     * @param title sets the title of a task.
+     * @param start sets starting time of task execution.
+     * @param end sets time for ending of task execution.
+     * @param interval sets interval between task repeats.
      */
 
-    public Task(final String uTitle, final int uStart,
-                final int uEnd, final int uInterval) {
-        this.title = uTitle;
-        this.start = uStart;
-        this.end = uEnd;
-        this.interval = uInterval;
+    public Task(String title, int start,
+                int end, int interval) {
+        this.title = title;
+        this.start = start;
+        this.end = end;
+        this.interval = interval;
         isActive = false;
     }
 
@@ -44,23 +44,23 @@ public class Task {
      * @return title
      */
 
-    public final String getTitle() {
+    public String getTitle() {
         return title;
     }
 
     /**
      * Setter for task title.
-     * @param uTitle sets new task title
+     * @param title sets new task title
      */
-    public final void setTitle(final String uTitle) {
-        this.title = uTitle;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     /**
      * Getter for current status of task.
      * @return isActive field.
      */
-    public final boolean isActive() {
+    public boolean isActive() {
         return isActive;
     }
 
@@ -68,7 +68,7 @@ public class Task {
      * Setter for isActive field.
      * @param active sets new activity status.
      */
-    public final void setActive(final boolean active) {
+    public void setActive(boolean active) {
         isActive = active;
     }
 
@@ -78,7 +78,7 @@ public class Task {
      * return start if task is repeatable.
      */
 
-    public final int getTime() {
+    public int getTime() {
         if (interval == 0) {
             return time;
         } else {
@@ -89,32 +89,31 @@ public class Task {
     /**
      *  Setter for task time.
      *  Converts repeatable task into a non-repeatable one.
-     * @param uTime sets new task time.
+     * @param time sets new task time.
      */
 
-    public final void setTime(final int uTime) {
+    public void setTime(int time) {
         if (interval != 0) {
             this.interval = 0;
-            this.start = uTime;
-            this.end = uTime;
+            this.start = time;
+            this.end = time;
         }
 
-        this.time = uTime;
+        this.time = time;
     }
 
     /**
      *  Setter for task time.
      *  Converts a non-repeatable task into a repeatable one.
-     * @param uStart sets new task start time
-     * @param uEnd sets new task end time
-     * @param uInterval sets new task repeat interval
+     * @param start sets new task start time
+     * @param end sets new task end time
+     * @param interval sets new task repeat interval
      */
 
-    public final void setTime(final int uStart,
-                              final int uEnd, final int uInterval) {
-        this.start = uStart;
-        this.end = uEnd;
-        this.interval = uInterval;
+    public void setTime(int start, int end, int interval) {
+        this.start = start;
+        this.end = end;
+        this.interval = interval;
     }
 
     /**
@@ -123,7 +122,7 @@ public class Task {
      * return start time of repeatable task execution.
      */
 
-    public final int getStartTime() {
+    public int getStartTime() {
         if (interval == 0) {
             return time;
         } else {
@@ -137,7 +136,7 @@ public class Task {
      *  return end time of repeatable task execution.
      */
 
-    public final int getEndTime() {
+    public int getEndTime() {
         if (interval == 0) {
             return time;
         } else {
@@ -152,7 +151,7 @@ public class Task {
      *  return interval of repeatable task execution.
      */
 
-    public final int getRepeatInterval() {
+    public int getRepeatInterval() {
         if (interval == 0) {
             return 0;
         } else {
@@ -166,7 +165,7 @@ public class Task {
      * return false if task is non-repeatable.
      */
 
-    public final boolean isRepeated() {
+    public boolean isRepeated() {
         return interval > 0 && start != end;
     }
 
@@ -185,16 +184,18 @@ public class Task {
      * return time if current time is less than task execution time.
      */
 
-    public final int nextTimeAfter(final int current) {
-        if (((current > this.time && interval == 0) || !this.isActive)
-                || (current > this.end && this.interval != 0)) {
+    public int nextTimeAfter(int current) {
+        if (((current >= this.time && interval == 0) || !this.isActive)
+                || (current >= this.end && this.interval != 0)) {
             return -1;
         } else {
             if (interval > 0) {
-                if (current > start) {
+                if (current + interval > end) {
+                    return -1;
+                } else if (current >= start) {
                     int tempStart = start;
 
-                    while (current > tempStart) {
+                    while (current >= tempStart) {
                         tempStart += interval;
                     }
 
@@ -216,7 +217,7 @@ public class Task {
      * compared objects, false if they are not.
      */
     @Override
-    public boolean equals(final Object o) {
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
@@ -239,5 +240,17 @@ public class Task {
     @Override
     public int hashCode() {
         return Objects.hash(title, time, start, end, interval, isActive);
+    }
+
+    @Override
+    public String toString() {
+        return "Task{" +
+                "title='" + title + '\'' +
+                ", time=" + time +
+                ", start=" + start +
+                ", end=" + end +
+                ", interval=" + interval +
+                ", isActive=" + isActive +
+                '}';
     }
 }
