@@ -1,37 +1,58 @@
 package ua.edu.sumdu.j2se.hrushev.tasks;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 
 public class ArrayTaskList {
-    private ArrayList<Task> tasks = new ArrayList<>();
+    private int size;
+    private int capacity;
+    private Task[] tasks = new Task[capacity];
 
     public void add(Task task) {
-        tasks.add(task);
+        if (size+1 >= capacity) {
+            this.grow();
+            System.out.println("I've grown!");
+        }
+        tasks[size++] = task;
+    }
+
+    private void grow() {
+        tasks = Arrays.copyOf(tasks, capacity+5);
+        capacity += 5;
     }
 
     public boolean remove(Task task) {
-        if (tasks.contains(task)) {
-            tasks.remove(task);
-            return true;
-        } else {
-            return false;
+        for (int i = 0; i < size; i++) {
+            if (task.equals(tasks[i])) {
+                int numMoved = size - i - 1;
+                if (numMoved > 0)
+                    System.arraycopy(tasks, i+1, tasks, i,
+                            numMoved);
+                System.out.println(Arrays.toString(tasks));
+                tasks[--size] = null;
+                return true;
+            }
         }
+        return false;
     }
 
     public int size() {
-        return tasks.size();
+        return size;
     }
 
     public Task getTask(int index) {
-        return tasks.get(index);
+        if (index < size && index >= 0 && tasks[index] != null) {
+            return tasks[index];
+        } else return null;
     }
 
     public ArrayTaskList incoming(int from, int to) {
         ArrayTaskList selectedTasks = new ArrayTaskList();
         for (Task i: tasks) {
-            if ( (i.getTime() > from && i.getTime() < to) || (i.getStartTime() > from && i.getStartTime() < to)) {
-                if (i.isActive()){
-                    selectedTasks.add(i);
+            if (i != null){
+                if ( (i.getTime() > from && i.getTime() < to) || (i.getStartTime() > from && i.getStartTime() < to) ) {
+                    if (i.isActive()){
+                        selectedTasks.add(i);
+                    }
                 }
             }
         }
@@ -42,7 +63,9 @@ public class ArrayTaskList {
     @Override
     public String toString() {
         return "ArrayTaskList{" +
-                "tasks=" + tasks +
+                "size=" + size +
+                ", capacity=" + capacity +
+                ", tasks=" + Arrays.toString(tasks) +
                 '}';
     }
 }
