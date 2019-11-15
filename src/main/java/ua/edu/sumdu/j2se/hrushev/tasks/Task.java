@@ -16,7 +16,10 @@ public class Task {
      * @param time time sets the time of task execution.
      */
 
-    public Task(String title, int time) {
+    public Task(String title, int time) throws IllegalArgumentException {
+        if (time < 0) {
+            throw new IllegalArgumentException("Time cannot be of negative value.");
+        }
         this.title = title;
         this.time = time;
         isActive = false;

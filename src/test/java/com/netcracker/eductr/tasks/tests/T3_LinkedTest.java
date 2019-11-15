@@ -35,13 +35,13 @@ public class T3_LinkedTest {
 	}
 
     @Test
-    public void part1_testSizeAddGet() {
-        TaskList actual = new TaskList();
-        Assert.assertEquals("LinkedTaskList.size()", 0, actual.size());
-        List<Task> expected = Arrays.asList(
-                create("A"),
-                create("B"),
-                create("C"));
+        public void part1_testSizeAddGet() {
+            TaskList actual = new TaskList();
+            Assert.assertEquals("LinkedTaskList.size()", 0, actual.size());
+            List<Task> expected = Arrays.asList(
+                    create("A"),
+                    create("B"),
+                    create("C"));
 
 	    expected.forEach(actual::add);
         Assert.assertEquals("LinkedTaskList.size()", 3, actual.size());

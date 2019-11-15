@@ -7,17 +7,18 @@ public class Main {
         Task task3 = new Task("some3", 10);
         Task task4 = new Task("some4", 2, 100, 20);
 
-        ArrayTaskList tasks = new ArrayTaskList();
+        task1.setActive(true);
+        task3.setActive(true);
+
+        LinkedTaskList tasks = new LinkedTaskList();
+
         System.out.println(tasks.size());
+
         tasks.add(task1);
         tasks.add(task2);
         tasks.add(task3);
         tasks.add(task4);
-        System.out.println(tasks.size());
 
-        tasks.remove(task2);
-        System.out.println(tasks.size());
-
-        System.out.println(tasks.getTask(0));
+        System.out.println(tasks.incoming(0, 100));
     }
 }

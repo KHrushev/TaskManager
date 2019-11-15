@@ -40,9 +40,13 @@ public class ArrayTaskList {
     }
 
     public Task getTask(int index) {
-        if (index < size && index >= 0 && tasks[index] != null) {
-            return tasks[index];
-        } else return null;
+        if (index >= size) {
+            throw new IndexOutOfBoundsException("Given index is greater than the size of array");
+        } else {
+            if (index >= 0 && tasks[index] != null) {
+                return tasks[index];
+            } else return null;
+        }
     }
 
     public ArrayTaskList incoming(int from, int to) {
