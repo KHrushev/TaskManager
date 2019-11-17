@@ -2,8 +2,8 @@ package ua.edu.sumdu.j2se.hrushev.tasks;
 
 public class LinkedTaskList {
     private int size;
-    public Node first;
-    public Node last;
+    private Node first;
+    private Node last;
 
     public void add(Task task) {
         if (size == 0) {
@@ -83,18 +83,22 @@ public class LinkedTaskList {
 
     public Task getTask(int index) {
         if (index < 0 || index >= size) {
-            throw new IndexOutOfBoundsException("Index should go out of list bounds");
-        }
-        Node current = first;
-        for (int i = 0; i <= index; i++) {
-            current = current.next;
+            throw new IndexOutOfBoundsException("Index should not be out of lists bounds");
         }
 
-        return current.item;
+        return getNode(index).item;
     }
 
     public int size() {
         return size;
+    }
+
+    public Node getFirst() {
+        return first;
+    }
+
+    public Node getLast() {
+        return last;
     }
 
     public LinkedTaskList incoming(int from, int to) {
@@ -109,6 +113,22 @@ public class LinkedTaskList {
         }
 
         return selectedTasks;
+    }
+
+    private Node getNode(int index) {
+        if (size > 0 && index < (size / 2)) {
+            Node x = first;
+            for (int i = 0; i < index; i++) {
+                x = x.next;
+            }
+            return x;
+        } else {
+            Node x = last;
+            for (int i = size - 1; i > index; i--) {
+                x = x.prev;
+            }
+            return x;
+        }
     }
 
     class Node {

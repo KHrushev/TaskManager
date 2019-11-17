@@ -19,6 +19,7 @@ public class Main {
         tasks.add(task3);
         tasks.add(task4);
 
-        System.out.println(tasks.incoming(0, 100));
+        System.out.println(tasks.getTask(0));
+        System.out.println(tasks.size());
     }
 }
