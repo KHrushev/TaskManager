@@ -1,6 +1,6 @@
 package ua.edu.sumdu.j2se.hrushev.tasks;
 
-public class LinkedTaskList {
+public class LinkedTaskList extends AbstractTaskList {
     private int size;
     private Node first;
     private Node last;
@@ -89,10 +89,6 @@ public class LinkedTaskList {
         return getNode(index).item;
     }
 
-    public int size() {
-        return size;
-    }
-
     public Node getFirst() {
         return first;
     }
@@ -105,10 +101,8 @@ public class LinkedTaskList {
         LinkedTaskList selectedTasks = new LinkedTaskList();
 
         for (Node i = first; i != null; i = i.next) {
-            if ( (i.item.getTime() > from && i.item.getTime() < to) || (i.item.getStartTime() > from && i.item.getStartTime() < to) ) {
-                if (i.item.isActive()){
-                    selectedTasks.add(i.item);
-                }
+            if (i.item.nextTimeAfter(from) <= to && i.item.nextTimeAfter(from) > 0) {
+                selectedTasks.add(i.item);
             }
         }
 

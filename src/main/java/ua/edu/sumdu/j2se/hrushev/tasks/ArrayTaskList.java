@@ -2,7 +2,7 @@ package ua.edu.sumdu.j2se.hrushev.tasks;
 
 import java.util.Arrays;
 
-public class ArrayTaskList {
+public class ArrayTaskList extends AbstractTaskList {
     private int size;
     private int capacity;
     private Task[] tasks = new Task[capacity];
@@ -10,7 +10,6 @@ public class ArrayTaskList {
     public void add(Task task) {
         if (size+1 >= capacity) {
             this.grow();
-            System.out.println("I've grown!");
         }
         tasks[size++] = task;
     }
@@ -35,10 +34,6 @@ public class ArrayTaskList {
         return false;
     }
 
-    public int size() {
-        return size;
-    }
-
     public Task getTask(int index) {
         if (index >= size) {
             throw new IndexOutOfBoundsException("Given index is greater than the size of array");
@@ -53,10 +48,8 @@ public class ArrayTaskList {
         ArrayTaskList selectedTasks = new ArrayTaskList();
         for (Task i: tasks) {
             if (i != null){
-                if ( (i.getTime() > from && i.getTime() < to) || (i.getStartTime() > from && i.getStartTime() < to) ) {
-                    if (i.isActive()){
-                        selectedTasks.add(i);
-                    }
+                if (i.nextTimeAfter(from) <= to && i.nextTimeAfter(from) > 0) {
+                    selectedTasks.add(i);
                 }
             }
         }

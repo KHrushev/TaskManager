@@ -3,7 +3,6 @@ package ua.edu.sumdu.j2se.hrushev.tasks;
 import java.util.Objects;
 
 public class Task {
-
     private String title;
     private int time;
     private int start;
