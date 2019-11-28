@@ -39,6 +39,10 @@ public class LinkedTaskList extends AbstractTaskList {
         size++;
     }
 
+    public int size() {
+        return size;
+    }
+
     public boolean remove(Task task) {
         if (task == null) {
             for (Node x = first; x != null; x = x.next) {
@@ -95,18 +99,6 @@ public class LinkedTaskList extends AbstractTaskList {
 
     public Node getLast() {
         return last;
-    }
-
-    public LinkedTaskList incoming(int from, int to) {
-        LinkedTaskList selectedTasks = new LinkedTaskList();
-
-        for (Node i = first; i != null; i = i.next) {
-            if (i.item.nextTimeAfter(from) <= to && i.item.nextTimeAfter(from) > 0) {
-                selectedTasks.add(i.item);
-            }
-        }
-
-        return selectedTasks;
     }
 
     private Node getNode(int index) {

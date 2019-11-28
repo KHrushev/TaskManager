@@ -10,6 +10,7 @@ public class ArrayTaskList extends AbstractTaskList {
     public void add(Task task) {
         if (size+1 >= capacity) {
             this.grow();
+            System.out.println("I've grown ");
         }
         tasks[size++] = task;
     }
@@ -17,6 +18,10 @@ public class ArrayTaskList extends AbstractTaskList {
     private void grow() {
         tasks = Arrays.copyOf(tasks, capacity+5);
         capacity += 5;
+    }
+
+    public int size() {
+        return size;
     }
 
     public boolean remove(Task task) {
@@ -42,19 +47,6 @@ public class ArrayTaskList extends AbstractTaskList {
                 return tasks[index];
             } else return null;
         }
-    }
-
-    public ArrayTaskList incoming(int from, int to) {
-        ArrayTaskList selectedTasks = new ArrayTaskList();
-        for (Task i: tasks) {
-            if (i != null){
-                if (i.nextTimeAfter(from) <= to && i.nextTimeAfter(from) > 0) {
-                    selectedTasks.add(i);
-                }
-            }
-        }
-
-        return selectedTasks;
     }
 
     @Override

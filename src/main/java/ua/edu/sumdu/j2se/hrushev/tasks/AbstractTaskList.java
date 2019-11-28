@@ -39,9 +39,7 @@ public abstract class AbstractTaskList implements Iterable<Task> {
         }
     }
 
-    public int size() {
-        return size;
-    }
+    public abstract int size();
 
     @Override
     public Iterator<Task> iterator() {

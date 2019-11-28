@@ -19,6 +19,6 @@ public class Main {
         tasks.add(task3);
         tasks.add(task4);
 
-        System.out.println();
+        System.out.println(tasks.size());
     }
 }
