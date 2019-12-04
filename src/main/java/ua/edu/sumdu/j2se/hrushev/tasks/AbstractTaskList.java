@@ -1,10 +1,6 @@
 package ua.edu.sumdu.j2se.hrushev.tasks;
 
-import java.util.Iterator;
-import java.util.Spliterator;
-import java.util.function.Consumer;
-
-public abstract class AbstractTaskList implements Iterable<Task> {
+public abstract class AbstractTaskList {
     private int size;
 
     public abstract void add(Task task);
@@ -40,19 +36,4 @@ public abstract class AbstractTaskList implements Iterable<Task> {
     }
 
     public abstract int size();
-
-    @Override
-    public Iterator<Task> iterator() {
-        return new CustomIterator<Task>(this);
-    }
-
-    @Override
-    public void forEach(Consumer<? super Task> action) {
-
-    }
-
-    @Override
-    public Spliterator<Task> spliterator() {
-        return null;
-    }
 }

@@ -1,6 +1,10 @@
 package ua.edu.sumdu.j2se.hrushev.tasks;
 
-public class LinkedTaskList extends AbstractTaskList {
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+import java.util.Objects;
+
+public class LinkedTaskList extends AbstractTaskList implements Cloneable, Iterable<Task>{
     private int size;
     private Node first;
     private Node last;
@@ -117,7 +121,7 @@ public class LinkedTaskList extends AbstractTaskList {
         }
     }
 
-    class Node {
+    class Node implements Cloneable{
         Task item;
         Node next;
         Node prev;
@@ -132,14 +136,117 @@ public class LinkedTaskList extends AbstractTaskList {
         public String toString() {
             return "Node{item=" + item + "}";
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof Node)) return false;
+            Node node = (Node) o;
+            return item.equals(node.item) &&
+                    Objects.equals(next, node.next) &&
+                    Objects.equals(prev, node.prev);
+        }
+
+        @Override
+        public int hashCode() {
+            int result = 1;
+            result = 31 * result + item.hashCode();
+            result = 31 * result + next.hashCode();
+            result = 31 * result + prev.hashCode();
+            return result;
+        }
+
+        @Override
+        public Node clone() throws CloneNotSupportedException {
+            Node node = (Node)super.clone();
+            node.item = item.clone();
+            return node;
+        }
     }
 
     @Override
     public String toString() {
-        return "LinkedTaskList{" +
-                "size=" + size +
-                ", first=" + first +
-                ", last=" + last +
-                '}';
+        StringBuilder result = new StringBuilder("LinkedTaskList{");
+        result.append("size=").append(size).append(", ");
+        for (Node i = this.first; i.next != null; i = i.next) {
+            result.append("Node=").append(i.item).append(", ");
+        }
+        result.deleteCharAt(result.length()-2);
+        result.append("}");
+        return result.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof LinkedTaskList)) return false;
+
+        LinkedTaskList that = (LinkedTaskList) o;
+        Node i = that.first;
+        Node j = this.first;
+
+        while (i != null && j != null) {
+            if (!(i.item.equals(j.item))) {
+                return false;
+            }
+            i = i.next;
+            j = j.next;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = 1;
+        result = 31 * result + size;
+        for (Node i = this.first; i != null; i = i.next) {
+            result = 31 * result + i.item.hashCode();
+        }
+        return result;
+    }
+
+    @Override
+    public LinkedTaskList clone() throws CloneNotSupportedException {
+        LinkedTaskList linkedTaskList = (LinkedTaskList)super.clone();
+        linkedTaskList.first = first.clone();
+        linkedTaskList.last = last.clone();
+        return linkedTaskList;
+    }
+
+    @Override
+    public Iterator<Task> iterator() {
+        return new Iterator<Task>() {
+
+            Node current = first;
+            int countNext;
+
+            @Override
+            public boolean hasNext() {
+                return current != null;
+            }
+
+            @Override
+            public Task next() throws NoSuchElementException {
+                if (hasNext()) {
+                    Task data = current.item;
+                    current = current.next;
+                    countNext++;
+                    return data;
+                } else {
+                    countNext++;
+                    throw new NoSuchElementException("No such element.");
+                }
+            }
+
+            @Override
+            public void remove() throws IllegalStateException {
+                if(countNext == 0) {
+                    throw new IllegalStateException();
+                } else {
+                    LinkedTaskList.this.remove(this.current.prev.item);
+                }
+            }
+        };
     }
 }

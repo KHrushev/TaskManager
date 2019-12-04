@@ -1,8 +1,6 @@
 package ua.edu.sumdu.j2se.hrushev.tasks;
 
-import java.util.Objects;
-
-public class Task {
+public class Task implements Cloneable{
     private String title;
     private int time;
     private int start;
@@ -223,7 +221,7 @@ public class Task {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof Task)) {
+        if (!(o instanceof Task) || this.hashCode() != o.hashCode()) {
             return false;
         }
         Task task = (Task) o;
@@ -241,7 +239,13 @@ public class Task {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(title, time, start, end, interval, isActive);
+        int hash = (isActive ? 1: 0);
+        hash = 31 * hash + title.hashCode();
+        hash = 31 * hash + time;
+        hash = 31 * hash + start;
+        hash = 31 * hash + end;
+        hash = 31 * hash + interval;
+        return hash;
     }
 
     @Override
@@ -254,5 +258,10 @@ public class Task {
                 ", interval=" + interval +
                 ", isActive=" + isActive +
                 '}';
+    }
+
+    @Override
+    public Task clone() throws CloneNotSupportedException {
+        return (Task)super.clone();
     }
 }
