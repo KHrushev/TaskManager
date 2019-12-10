@@ -1,38 +1,23 @@
 package ua.edu.sumdu.j2se.hrushev.tasks;
 
+import java.util.Objects;
+import java.util.stream.Stream;
+
 public abstract class AbstractTaskList {
     private int size;
 
     public abstract void add(Task task);
     public abstract boolean remove(Task task);
     public abstract Task getTask(int index);
+    public abstract Stream<Task> getStream();
 
-    public AbstractTaskList incoming(int from, int to) {
-        AbstractTaskList selectedTasks = TaskListFactory.createTaskList(this.getClass().toString().endsWith("ArrayTaskList") ? ListTypes.types.ARRAY : ListTypes.types.LINKED);
-        int i = 0;
-        if (selectedTasks.getClass().toString().equals("ArrayTaskList")) {
-            while (this.size() > i) {
-                if (this.getTask(i) != null){
-                    if (this.getTask(i).nextTimeAfter(from) <= to && this.getTask(i).nextTimeAfter(from) > 0) {
-                        selectedTasks.add(this.getTask(i));
-                    }
-                }
-                i++;
-            }
+    public final AbstractTaskList incoming(int from, int to) {
+        AbstractTaskList selectedTasks = TaskListFactory.createTaskList(this instanceof ArrayTaskList ? ListTypes.types.ARRAY : ListTypes.types.LINKED);
 
-            return selectedTasks;
-        } else {
-            while (this.size() > i) {
-                if (this.getTask(i) != null){
-                    if (this.getTask(i).nextTimeAfter(from) <= to && this.getTask(i).nextTimeAfter(from) > 0) {
-                        selectedTasks.add(this.getTask(i));
-                    }
-                }
-                i++;
-            }
+        this.getStream().filter(task -> task != null && task.nextTimeAfter(from) != -1 && task.nextTimeAfter(from) <= to && task.isActive())
+                .forEach(selectedTasks::add);
 
-            return selectedTasks;
-        }
+        return selectedTasks;
     }
 
     public abstract int size();

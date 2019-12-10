@@ -1,8 +1,8 @@
 package ua.edu.sumdu.j2se.hrushev.tasks;
 
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-import java.util.Objects;
+import java.util.*;
+import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 public class LinkedTaskList extends AbstractTaskList implements Cloneable, Iterable<Task>{
     private int size;
@@ -121,6 +121,15 @@ public class LinkedTaskList extends AbstractTaskList implements Cloneable, Itera
         }
     }
 
+    @Override
+    public Stream<Task> getStream() {
+        ArrayTaskList tempList = new ArrayTaskList();
+        for (int i = 0; i < this.size(); i++) {
+            tempList.add(this.getTask(i));
+        }
+        return tempList.getStream();
+    }
+
     class Node implements Cloneable{
         Task item;
         Node next;
@@ -234,7 +243,6 @@ public class LinkedTaskList extends AbstractTaskList implements Cloneable, Itera
                     countNext++;
                     return data;
                 } else {
-                    countNext++;
                     throw new NoSuchElementException("No such element.");
                 }
             }
@@ -245,6 +253,14 @@ public class LinkedTaskList extends AbstractTaskList implements Cloneable, Itera
                     throw new IllegalStateException();
                 } else {
                     LinkedTaskList.this.remove(this.current.prev.item);
+                }
+            }
+
+            public void forEach(Consumer<? super Task> action) {
+                Objects.requireNonNull(action);
+                for (Iterator<Task> it = this; it.hasNext(); ) {
+                    Task t = it.next();
+                    action.accept(t);
                 }
             }
         };

@@ -3,6 +3,7 @@ package ua.edu.sumdu.j2se.hrushev.tasks;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.stream.Stream;
 
 public class ArrayTaskList extends AbstractTaskList implements Cloneable, Iterable<Task>{
     private int size;
@@ -17,8 +18,8 @@ public class ArrayTaskList extends AbstractTaskList implements Cloneable, Iterab
     }
 
     private void grow() {
-        tasks = Arrays.copyOf(tasks, capacity+5);
-        capacity += 5;
+        tasks = Arrays.copyOf(tasks, capacity+1);
+        capacity++;
     }
 
     public int size() {
@@ -47,6 +48,11 @@ public class ArrayTaskList extends AbstractTaskList implements Cloneable, Iterab
                 return tasks[index];
             } else return null;
         }
+    }
+
+    @Override
+    public Stream<Task> getStream() {
+        return Stream.of(this.tasks);
     }
 
     @Override
