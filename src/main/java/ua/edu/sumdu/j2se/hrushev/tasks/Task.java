@@ -35,6 +35,7 @@ public class Task implements Cloneable{
         this.start = start;
         this.end = end;
         this.interval = interval;
+        this.time = start;
         isActive = false;
     }
 
@@ -184,23 +185,26 @@ public class Task implements Cloneable{
      */
 
     public LocalDateTime nextTimeAfter(LocalDateTime current) {
-        if (interval > 0 && this.isActive) {
-            if (end != null && end.isBefore(current.plusSeconds(interval))) {
-                return null;
-            } else if (start.isBefore(current)) {
-                LocalDateTime tempStart = start;
+        if (this.isActive) {
+            if (interval > 0) {
+                if (end != null && end.isBefore(current.plusSeconds(interval))) {
+                    return end;
+                } else if (start.isBefore(current)) {
+                    LocalDateTime tempStart = start;
 
-                while (tempStart.isBefore(current)) {
-                    tempStart = tempStart.plusSeconds(interval);
+                    while (tempStart.isBefore(current)) {
+                        tempStart = tempStart.plusSeconds(interval);
+                    }
+
+                    return tempStart;
+                } else {
+                    return start;
                 }
-
-                return tempStart;
-            } else {
-                return start;
+            } else if (time.isAfter(current)){
+                return time;
             }
-        } else if (time.isAfter(current) && this.isActive){
-            return time;
         }
+
         return null;
     }
 

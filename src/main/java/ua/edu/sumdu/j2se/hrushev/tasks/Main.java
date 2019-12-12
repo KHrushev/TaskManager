@@ -9,11 +9,11 @@ public class Main {
         LocalDateTime tomorrow = today.plusDays(1);
         LocalDateTime today_1h = today.plusHours(1);
 
-        Task task4 = new Task("some4", today, tomorrow, 3600);
+        Task task1 = new Task("some", today, tomorrow, 3600);
 
-        task4.setActive(true);
+        task1.setActive(true);
 
-        System.out.println(task4.nextTimeAfter(today));
-        System.out.println(task4.nextTimeAfter(today_1h));
+        System.out.println(task1.nextTimeAfter(today));
+        System.out.println(task1.nextTimeAfter(today_1h));
     }
 }
