@@ -185,27 +185,29 @@ public class Task implements Cloneable{
      */
 
     public LocalDateTime nextTimeAfter(LocalDateTime current) {
-        if (this.isActive) {
+        if (this.isActive()) {
             if (interval > 0) {
-                if (end != null && end.isBefore(current.plusSeconds(interval))) {
-                    return end;
-                } else if (start.isBefore(current)) {
-                    LocalDateTime tempStart = start;
-
-                    while (tempStart.isBefore(current)) {
-                        tempStart = tempStart.plusSeconds(interval);
-                    }
-
-                    return tempStart;
+                if (current.isAfter(end)) {
+                    return null;
                 } else {
-                    return start;
-                }
-            } else if (time.isAfter(current)){
-                return time;
-            }
-        }
+                    if (current.isBefore(start)) {
+                        return start;
+                    } else {
+                        LocalDateTime nextAfter = start;
 
-        return null;
+                        while (nextAfter.isBefore(current)) {
+                            nextAfter = nextAfter.plusSeconds(interval);
+                        }
+
+                        return nextAfter;
+                    }
+                }
+            } else {
+                return current.isBefore(time) ? time : null;
+            }
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -240,9 +242,9 @@ public class Task implements Cloneable{
     public int hashCode() {
         int hash = (isActive ? 1 : 0);
         hash = 31 * hash + title.hashCode();
-        hash += 31 * time.hashCode();
-        hash += 31 * start.hashCode();
-        hash += 31 * end.hashCode();
+        hash += time != null ? 31 * time.hashCode() : 0;
+        hash += start != null ? 31 * start.hashCode() : 0;
+        hash += end != null ? 31 * end.hashCode() : 0;
         hash += 31 * interval;
         return hash;
     }

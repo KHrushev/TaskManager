@@ -3,7 +3,7 @@ package ua.edu.sumdu.j2se.hrushev.tasks;
 import java.time.LocalDateTime;
 import java.util.stream.Stream;
 
-public abstract class AbstractTaskList {
+public abstract class AbstractTaskList implements Iterable<Task>{
     private int size;
 
     public abstract void add(Task task);
