@@ -15,9 +15,15 @@ public class Task implements Cloneable{
      * @param time time sets the time of task execution.
      */
 
-    public Task(String title, LocalDateTime time) {
+    public Task(String title, LocalDateTime time) throws IllegalArgumentException{
         this.title = title;
-        this.time = time;
+        try {
+            if (time == null) {
+                throw new IllegalArgumentException();
+            } else this.time = time;
+        } catch (IllegalArgumentException iae) {
+            throw new IllegalArgumentException("Illegal Argument");
+        }
         isActive = false;
     }
 
@@ -30,12 +36,19 @@ public class Task implements Cloneable{
      */
 
     public Task(String title, LocalDateTime start,
-                LocalDateTime end, int interval) {
+                LocalDateTime end, int interval) throws IllegalArgumentException{
         this.title = title;
-        this.start = start;
-        this.end = end;
-        this.interval = interval;
-        this.time = start;
+        try {
+            if (start == null || end == null || interval <= 0) throw new IllegalArgumentException();
+            else {
+                this.start = start;
+                this.end = end;
+                this.interval = interval;
+                this.time = start;
+            }
+        } catch (IllegalArgumentException iae) {
+            throw new IllegalArgumentException("Illegal Argument");
+        }
         isActive = false;
     }
 
@@ -123,11 +136,7 @@ public class Task implements Cloneable{
      */
 
     public LocalDateTime getStartTime() {
-        if (interval == 0) {
-            return time;
-        } else {
-            return start;
-        }
+        return interval == 0 ? time : start;
     }
 
     /**
@@ -195,11 +204,11 @@ public class Task implements Cloneable{
                     } else {
                         LocalDateTime nextAfter = start;
 
-                        while (nextAfter.isBefore(current)) {
+                        while (nextAfter.isBefore(current.plusSeconds(1))) {
                             nextAfter = nextAfter.plusSeconds(interval);
                         }
 
-                        return nextAfter;
+                        return nextAfter.isAfter(end) ? null : nextAfter;
                     }
                 }
             } else {

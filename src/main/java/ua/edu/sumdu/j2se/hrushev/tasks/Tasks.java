@@ -1,8 +1,9 @@
 package ua.edu.sumdu.j2se.hrushev.tasks;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Tasks {
     public static Iterable<Task> incoming(Iterable<Task> tasks, LocalDateTime from, LocalDateTime to) {
@@ -25,13 +26,18 @@ public class Tasks {
         Set<LocalDateTime> dateList = new HashSet<>();
 
         for (Task task : taskList) {
-            dateList.add(task.getStartTime());
+            if (task.getRepeatInterval() > 0) {
+                Stream<LocalDateTime> stream = Tasks.getRepeatDates(task).stream();
+                dateList.addAll(stream.filter(date -> date.isBefore(end) && date.isAfter(start)).collect(Collectors.toList()));
+            } else {
+                dateList.add(task.getTime());
+            }
         }
 
         for (LocalDateTime date : dateList) {
             Set<Task> set = new HashSet<>();
             for (Task task : taskList) {
-                if (task.getStartTime().equals(date)) {
+                if (task.getStartTime().equals(date) || (task.nextTimeAfter(start) != null && task.nextTimeAfter(start).isBefore(end))) {
                     set.add(task);
                 }
             }
@@ -40,5 +46,16 @@ public class Tasks {
         }
 
         return calendar;
+    }
+
+    private static List<LocalDateTime> getRepeatDates(Task task) {
+        ArrayList<LocalDateTime> dates = new ArrayList<>();
+        LocalDateTime date = task.getStartTime();
+        while (date.isBefore(task.getEndTime())) {
+            dates.add(date);
+            date = date.plusSeconds(task.getRepeatInterval());
+        }
+
+        return dates;
     }
 }
