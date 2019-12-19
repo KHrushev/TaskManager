@@ -27,8 +27,7 @@ public class Tasks {
 
         for (Task task : taskList) {
             if (task.getRepeatInterval() > 0) {
-                Stream<LocalDateTime> stream = Tasks.getRepeatDates(task).stream();
-                dateList.addAll(stream.filter(date -> date.isBefore(end) && date.isAfter(start)).collect(Collectors.toList()));
+                dateList.addAll(Tasks.getRepeatDates(task).stream().filter(date -> date.isBefore(end.plusSeconds(1)) && date.isAfter(start)).collect(Collectors.toList()));
             } else {
                 dateList.add(task.getTime());
             }
@@ -37,8 +36,15 @@ public class Tasks {
         for (LocalDateTime date : dateList) {
             Set<Task> set = new HashSet<>();
             for (Task task : taskList) {
-                if (task.getStartTime().equals(date) || (task.nextTimeAfter(start) != null && task.nextTimeAfter(start).isBefore(end))) {
-                    set.add(task);
+                if (Tasks.getRepeatDates(task).contains(date) && !date.equals(task.getStartTime())) {
+                    List<LocalDateTime> tempDates = Tasks.getRepeatDates(task);
+                    for (LocalDateTime tempDate : tempDates) {
+                        if (tempDate.equals(date)) set.add(task);
+                    }
+                } else {
+                    if (task.getStartTime().equals(date)) {
+                        set.add(task);
+                    }
                 }
             }
 
