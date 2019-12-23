@@ -1,42 +1,33 @@
 package ua.edu.sumdu.j2se.hrushev.tasks;
 
+import java.io.File;
+import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 
 public class Main {
     public static void main(String[] args) {
         LocalDateTime TODAY = LocalDateTime.now().withHour(0).withMinute(0).withSecond(0);
         LocalDateTime YESTERDAY = TODAY.minusDays(1);
         LocalDateTime TOMORROW = TODAY.plusDays(1);
-        LocalDateTime TODAY_1H = TODAY.plusHours(1);
-        LocalDateTime TODAY_2H = TODAY.plusHours(2);
-        LocalDateTime TODAY_3H = TODAY.plusHours(3);
-        LocalDateTime TODAY_4H = TODAY.plusHours(4);
-        LocalDateTime ALMOST_TODAY = TODAY.minusSeconds(1);
 
-        Task daily = new Task("Daily", YESTERDAY, TOMORROW, 3600*24);
-        Task hourly = new Task("Hourly", TODAY, TOMORROW, 3600);
-        Task every3h = new Task("Every 3 hours", TODAY_1H, TOMORROW, 3*3600);
-        Task task = new Task("some", TODAY_4H, TOMORROW, 3600);
+        Task task1 = new Task("some1", YESTERDAY, TOMORROW, 3600*24);
+        Task task2 = new Task("some2", TODAY, TOMORROW, 3600);
+        Task task3 = new Task("some3", TODAY, TOMORROW, 3*3600);
+        Task task4 = new Task("some4", TODAY, TOMORROW, 3600);
 
-        daily.setActive(true);
-        hourly.setActive(true);
-        every3h.setActive(true);
-        task.setActive(true);
+        task1.setActive(true);
+        task2.setActive(true);
+        task3.setActive(true);
+        task4.setActive(true);
 
-        SortedMap<LocalDateTime, Set<Task>> timeline = new TreeMap<>();
-        timeline.put(TODAY, new HashSet<>(Arrays.asList(daily, hourly)));
-        timeline.put(TODAY_1H, new HashSet<>(Arrays.asList(hourly, every3h)));
-        timeline.put(TODAY_2H, new HashSet<>(Collections.singletonList(hourly)));
-        timeline.put(TODAY_3H, new HashSet<>(Collections.singletonList(hourly)));
-        timeline.put(TODAY_4H, new HashSet<>(Arrays.asList(hourly, every3h)));
+        ArrayTaskList tasks = new ArrayTaskList();
+        tasks.add(task1);
+        tasks.add(task2);
+        tasks.add(task3);
+        tasks.add(task4);
 
-        SortedMap<LocalDateTime, Set<Task>> result = Tasks.calendar(new HashSet<>(Arrays.asList(daily, hourly, every3h)), ALMOST_TODAY, TODAY_4H);
-        Set<LocalDateTime> res = new HashSet<>(result.keySet());
-        res.removeAll(timeline.keySet());
 
-        System.out.println(timeline);
-        System.out.println(result);
-        System.out.println(res.size());
     }
 }

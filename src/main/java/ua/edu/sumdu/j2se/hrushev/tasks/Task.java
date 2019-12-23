@@ -1,8 +1,9 @@
 package ua.edu.sumdu.j2se.hrushev.tasks;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class Task implements Cloneable{
+public class Task implements Cloneable, Serializable {
     private String title;
     private LocalDateTime time;
     private LocalDateTime start;
@@ -49,7 +50,7 @@ public class Task implements Cloneable{
         } catch (IllegalArgumentException iae) {
             throw new IllegalArgumentException("Illegal Argument");
         }
-        isActive = false;
+        isActive = isActive;
     }
 
     /**

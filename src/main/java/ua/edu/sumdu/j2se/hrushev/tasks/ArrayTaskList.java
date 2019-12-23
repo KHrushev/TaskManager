@@ -1,11 +1,12 @@
 package ua.edu.sumdu.j2se.hrushev.tasks;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.stream.Stream;
 
-public class ArrayTaskList extends AbstractTaskList implements Cloneable, Iterable<Task>{
+public class ArrayTaskList extends AbstractTaskList implements Cloneable, Iterable<Task>, Serializable {
     private int size;
     private int capacity;
     private Task[] tasks = new Task[capacity];
