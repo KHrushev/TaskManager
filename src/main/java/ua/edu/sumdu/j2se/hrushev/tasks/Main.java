@@ -3,10 +3,10 @@ package ua.edu.sumdu.j2se.hrushev.tasks;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.time.LocalDateTime;
 
 public class Main {
@@ -26,21 +26,17 @@ public class Main {
         task4.setActive(true);
 
         AbstractTaskList tasks = new ArrayTaskList();
-        AbstractTaskList empty;
+        AbstractTaskList empty = new ArrayTaskList();
         tasks.add(task1);
         tasks.add(task2);
         tasks.add(task3);
         tasks.add(task4);
 
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        File file = new File("test.json");
 
-        try (FileWriter writer = new FileWriter("test.json")){
-            gson.toJson(tasks, writer);
-        }
-
-        try (FileReader reader = new FileReader("test.json")){
-            empty = gson.fromJson(reader, ArrayTaskList.class);
-            System.out.println(empty);
-        }
+        TaskIO.writeText(tasks, file);
+        TaskIO.readText(empty, file);
+        System.out.println(empty);
     }
 }

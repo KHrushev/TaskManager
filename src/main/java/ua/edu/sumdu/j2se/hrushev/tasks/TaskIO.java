@@ -94,7 +94,6 @@ public class TaskIO {
 
     public static void read(AbstractTaskList tasks, Reader in) {
         Gson gson = new Gson();
-        tasks = gson.fromJson(in, AbstractTaskList.class);
         tasks = tasks instanceof ArrayTaskList ? gson.fromJson(in, ArrayTaskList.class) : gson.fromJson(in, LinkedTaskList.class);
     }
 
