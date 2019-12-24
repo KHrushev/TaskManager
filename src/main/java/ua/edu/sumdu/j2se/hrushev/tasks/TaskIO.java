@@ -1,73 +1,67 @@
 package ua.edu.sumdu.j2se.hrushev.tasks;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+import com.sun.org.apache.xpath.internal.operations.Mod;
+
 import java.io.*;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.Type;
 import java.time.*;
 
 public class TaskIO {
     public static void write(AbstractTaskList tasks, OutputStream out) {
-        try {
-            ObjectOutputStream oos = new ObjectOutputStream(out);
-            DataOutputStream dataInputStream = new DataOutputStream(oos);
-
-            dataInputStream.writeInt(tasks.size());
-
-            for (Task task : tasks) {
-                dataInputStream.writeInt(task.getTitle().length());
-                dataInputStream.writeChars(task.getTitle());
-                dataInputStream.writeBoolean(task.isActive());
-                dataInputStream.writeInt(task.getRepeatInterval());
+        try (DataOutputStream oos = new DataOutputStream(out)) {
+            oos.write(tasks.size());
+            for(Task task : tasks) {
+                oos.write(task.getTitle().length());
+                oos.writeUTF(task.getTitle());
+                oos.writeBoolean(task.isActive());
+                oos.write(task.getRepeatInterval());
                 if (task.isRepeated()) {
                     Instant startInstant = task.getStartTime().atZone(ZoneId.systemDefault()).toInstant();
                     long startMillis = startInstant.toEpochMilli();
-                    dataInputStream.writeLong(startMillis);
+                    oos.writeLong(startMillis);
 
                     Instant endInstant = task.getEndTime().atZone(ZoneId.systemDefault()).toInstant();
                     long endMillis = endInstant.toEpochMilli();
-                    dataInputStream.writeLong(endMillis);
+                    oos.writeLong(endMillis);
                 } else {
                     Instant timeInstant = task.getTime().atZone(ZoneId.systemDefault()).toInstant();
                     long timeMillis = timeInstant.toEpochMilli();
-                    dataInputStream.writeLong(timeMillis);
+                    oos.writeLong(timeMillis);
                 }
             }
-
-//            oos.flush();
-//            oos.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public static void read(AbstractTaskList tasks, InputStream in) {
-        try {
-            DataInputStream inputStream = new DataInputStream(in);
-            int size = inputStream.read();
-
+        try (DataInputStream dis = new DataInputStream(in)) {
+            int size = dis.read();
+            Task task;
+            String title;
+            boolean active;
+            int repeatInterval;
+            LocalDateTime start, end, time;
             for (int i = 0; i < size; i++) {
-                int titleLength = inputStream.read();
-                String title = inputStream.readUTF();
-                boolean isActive = inputStream.readBoolean();
-                int interval = inputStream.read();
-                if (interval > 0) {
-                    long startMillis = inputStream.read();
-                    LocalDateTime start = LocalDateTime.ofInstant(Instant.ofEpochMilli(startMillis), ZoneId.systemDefault());
-                    long endMillis = inputStream.read();
-                    LocalDateTime end = LocalDateTime.ofInstant(Instant.ofEpochMilli(endMillis), ZoneId.systemDefault());
-
-                    Task newTask = new Task(title, start, end, interval);
-                    newTask.setActive(isActive);
-                    tasks.add(newTask);
+                dis.read();
+                title = dis.readUTF();
+                active = dis.readBoolean();
+                repeatInterval = dis.read();
+                if(repeatInterval > 0 ) {
+                    start = LocalDateTime.ofEpochSecond(dis.readLong(), 0, ZoneOffset.UTC);
+                    end = LocalDateTime.ofEpochSecond(dis.readLong(), 0, ZoneOffset.UTC);
+                    task = new Task(title, start, end, repeatInterval);
                 } else {
-                    long timeMillis = inputStream.read();
-                    LocalDateTime time = LocalDateTime.ofInstant(Instant.ofEpochMilli(timeMillis), ZoneId.systemDefault());
-
-                    Task newTask = new Task(title, time);
-                    newTask.setActive(isActive);
-                    tasks.add(newTask);
+                    time = LocalDateTime.ofEpochSecond(dis.readLong(), 0, ZoneOffset.UTC);
+                    task = new Task(title, time);
                 }
+                task.setActive(active);
+                tasks.add(task);
             }
-
-            inputStream.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -75,13 +69,7 @@ public class TaskIO {
 
     public static void writeBinary(AbstractTaskList tasks, File file) {
         try {
-            FileOutputStream fos = new FileOutputStream(file);
-            TaskIO.write(tasks, fos);
-
-//            fos.flush();
-//            fos.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            TaskIO.write(tasks, new FileOutputStream(file));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -89,12 +77,38 @@ public class TaskIO {
 
     public static void readBinary(AbstractTaskList tasks, File file) {
         try {
-            FileInputStream fis = new FileInputStream(file);
-            TaskIO.read(tasks, fis);
-
-            fis.close();
-        } catch (FileNotFoundException e) {
+            TaskIO.read(tasks, new FileInputStream(file));
+        } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    public static void write(AbstractTaskList tasks, Writer out) {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        try {
+            out.write(gson.toJson(tasks));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void read(AbstractTaskList tasks, Reader in) {
+        Gson gson = new Gson();
+        tasks = gson.fromJson(in, AbstractTaskList.class);
+        tasks = tasks instanceof ArrayTaskList ? gson.fromJson(in, ArrayTaskList.class) : gson.fromJson(in, LinkedTaskList.class);
+    }
+
+    public static void writeText(AbstractTaskList tasks, File file) {
+        try (FileWriter fwr = new FileWriter(file)){
+            write(tasks, fwr);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void readText(AbstractTaskList tasks, File file) {
+        try (FileReader frd = new FileReader(file)){
+            read(tasks, frd);
         } catch (IOException e) {
             e.printStackTrace();
         }

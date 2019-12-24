@@ -1,13 +1,16 @@
 package ua.edu.sumdu.j2se.hrushev.tasks;
 
-import java.io.File;
-import java.time.Instant;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.lang.reflect.Type;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         LocalDateTime TODAY = LocalDateTime.now().withHour(0).withMinute(0).withSecond(0);
         LocalDateTime YESTERDAY = TODAY.minusDays(1);
         LocalDateTime TOMORROW = TODAY.plusDays(1);
@@ -22,12 +25,22 @@ public class Main {
         task3.setActive(true);
         task4.setActive(true);
 
-        ArrayTaskList tasks = new ArrayTaskList();
+        AbstractTaskList tasks = new ArrayTaskList();
+        AbstractTaskList empty;
         tasks.add(task1);
         tasks.add(task2);
         tasks.add(task3);
         tasks.add(task4);
 
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
+        try (FileWriter writer = new FileWriter("test.json")){
+            gson.toJson(tasks, writer);
+        }
+
+        try (FileReader reader = new FileReader("test.json")){
+            empty = gson.fromJson(reader, ArrayTaskList.class);
+            System.out.println(empty);
+        }
     }
 }
