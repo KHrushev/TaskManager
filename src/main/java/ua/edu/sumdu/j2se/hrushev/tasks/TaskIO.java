@@ -9,6 +9,9 @@ import java.io.*;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.time.*;
+import java.util.ArrayList;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class TaskIO {
     public static void write(AbstractTaskList tasks, OutputStream out) {
@@ -94,7 +97,14 @@ public class TaskIO {
 
     public static void read(AbstractTaskList tasks, Reader in) {
         Gson gson = new Gson();
-        tasks = tasks instanceof ArrayTaskList ? gson.fromJson(in, ArrayTaskList.class) : gson.fromJson(in, LinkedTaskList.class);
+        AbstractTaskList tempList = tasks instanceof ArrayTaskList ? gson.fromJson(in, ArrayTaskList.class) : gson.fromJson(in, LinkedTaskList.class);
+        tempList.getStream().filter(Objects::nonNull).forEach(tasks::add);
+        System.out.println(tempList);
+        System.out.println(tasks);
+//        tempList.forEach(tasks::add);
+//        for (Task task : tempList) {
+//            if (task != null) tasks.add(task);
+//        }
     }
 
     public static void writeText(AbstractTaskList tasks, File file) {

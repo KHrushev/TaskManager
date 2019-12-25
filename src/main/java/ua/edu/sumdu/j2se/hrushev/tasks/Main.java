@@ -4,8 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
 
@@ -35,8 +33,10 @@ public class Main {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         File file = new File("test.json");
 
-        TaskIO.writeText(tasks, file);
+//        TaskIO.writeText(tasks, file);
         TaskIO.readText(empty, file);
         System.out.println(empty);
+//        System.out.println(tasks);
+//        System.out.println(empty);
     }
 }
