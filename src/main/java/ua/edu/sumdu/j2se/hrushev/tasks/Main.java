@@ -33,8 +33,12 @@ public class Main {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         File file = new File("test.json");
 
-//        TaskIO.writeText(tasks, file);
+        TaskIO.writeText(tasks, file);
         TaskIO.readText(empty, file);
+
+//        TaskIO.write(tasks, new FileWriter("test.json"));
+//        TaskIO.read(empty, new FileReader("test.json"));
+
         System.out.println(empty);
 //        System.out.println(tasks);
 //        System.out.println(empty);

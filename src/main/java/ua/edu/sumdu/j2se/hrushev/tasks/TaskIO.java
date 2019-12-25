@@ -2,16 +2,10 @@ package ua.edu.sumdu.j2se.hrushev.tasks;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
-import com.sun.org.apache.xpath.internal.operations.Mod;
 
 import java.io.*;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.Type;
 import java.time.*;
-import java.util.ArrayList;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class TaskIO {
     public static void write(AbstractTaskList tasks, OutputStream out) {
