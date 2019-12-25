@@ -1,11 +1,10 @@
 package ua.edu.sumdu.j2se.hrushev.tasks;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import java.io.*;
+import java.lang.reflect.Type;
 import java.time.*;
-import java.util.Objects;
 
 public class TaskIO {
     public static void write(AbstractTaskList tasks, OutputStream out) {
@@ -81,24 +80,26 @@ public class TaskIO {
     }
 
     public static void write(AbstractTaskList tasks, Writer out) {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        try {
-            out.write(gson.toJson(tasks));
+        try(Writer writer = out) {
+            AbstractTaskList list = tasks instanceof ArrayTaskList ? new ArrayTaskList() : new LinkedTaskList();
+            for(Task task : tasks) {
+                list.add(task);
+            }
+            Gson gson = new Gson();
+            writer.write(gson.toJson(list, tasks instanceof ArrayTaskList ? ArrayTaskList.class : LinkedTaskList.class));
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public static void read(AbstractTaskList tasks, Reader in) {
+        AbstractTaskList list;
+        Type type = tasks instanceof ArrayTaskList ? ArrayTaskList.class : LinkedTaskList.class;
         Gson gson = new Gson();
-        AbstractTaskList tempList = tasks instanceof ArrayTaskList ? gson.fromJson(in, ArrayTaskList.class) : gson.fromJson(in, LinkedTaskList.class);
-        tempList.getStream().filter(Objects::nonNull).forEach(tasks::add);
-        System.out.println(tempList);
-        System.out.println(tasks);
-//        tempList.forEach(tasks::add);
-//        for (Task task : tempList) {
-//            if (task != null) tasks.add(task);
-//        }
+        list = gson.fromJson(in, type);
+        for(Task task : list) {
+            tasks.add(task);
+        }
     }
 
     public static void writeText(AbstractTaskList tasks, File file) {
