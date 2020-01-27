@@ -1,4 +1,4 @@
-package ua.edu.sumdu.j2se.hrushev.tasks;
+package ua.edu.sumdu.j2se.hrushev.tasks.model;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -87,6 +87,19 @@ public class LinkedTaskList extends AbstractTaskList implements Cloneable, Itera
 
         x.item = null;
         size--;
+    }
+
+    public void clear() {
+        for (Node x = first; x!= null;) {
+            Node next = x.next;
+            x.item = null;
+            x.prev = null;
+            x.next = null;
+            x = next;
+        }
+
+        first = last = null;
+        size = 0;
     }
 
     public Task getTask(int index) {

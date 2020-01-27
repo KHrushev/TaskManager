@@ -1,9 +1,8 @@
-package ua.edu.sumdu.j2se.hrushev.tasks;
+package ua.edu.sumdu.j2se.hrushev.tasks.model;
 
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class Tasks {
     public static Iterable<Task> incoming(Iterable<Task> tasks, LocalDateTime from, LocalDateTime to) {

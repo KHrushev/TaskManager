@@ -1,4 +1,4 @@
-package ua.edu.sumdu.j2se.hrushev.tasks;
+package ua.edu.sumdu.j2se.hrushev.tasks.model;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -7,6 +7,7 @@ import java.util.stream.Stream;
 public abstract class AbstractTaskList implements Iterable<Task>, Serializable {
     public abstract void add(Task task);
     public abstract boolean remove(Task task);
+    public abstract void clear();
     public abstract Task getTask(int index);
     public abstract Stream<Task> getStream();
 

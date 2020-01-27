@@ -1,44 +1,26 @@
 package ua.edu.sumdu.j2se.hrushev.tasks;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import ua.edu.sumdu.j2se.hrushev.tasks.controller.*;
+import ua.edu.sumdu.j2se.hrushev.tasks.model.*;
+import ua.edu.sumdu.j2se.hrushev.tasks.view.*;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.time.LocalDateTime;
 
 public class Main {
-    public static void main(String[] args) throws IOException {
-        LocalDateTime TODAY = LocalDateTime.now().withHour(0).withMinute(0).withSecond(0);
-        LocalDateTime YESTERDAY = TODAY.minusDays(1);
-        LocalDateTime TOMORROW = TODAY.plusDays(1);
-
-        Task task1 = new Task("some1", YESTERDAY, TOMORROW, 3600*24);
-        Task task2 = new Task("some2", TODAY, TOMORROW, 3600);
-        Task task3 = new Task("some3", TODAY, TOMORROW, 3*3600);
-        Task task4 = new Task("some4", TODAY, TOMORROW, 3600);
-
-        task1.setActive(true);
-        task2.setActive(true);
-        task3.setActive(true);
-        task4.setActive(true);
-
+    public static void main(String[] args) {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime today = now.withHour(0).withMinute(0).withSecond(0);
         AbstractTaskList tasks = new ArrayTaskList();
-        AbstractTaskList empty = new ArrayTaskList();
-        tasks.add(task1);
-        tasks.add(task2);
-        tasks.add(task3);
-        tasks.add(task4);
+//        tasks.add(new Task("asd", now, now.plusHours(5), 2000));
+//        tasks.add(new Task("asdf", now));
+//        tasks.add(new Task("asdds", now));
+//
+//        tasks.getTask(0).setActive(true);
+//        tasks.getTask(1).setActive(true);
+//        tasks.getTask(2).setActive(true);
 
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        File file = new File("test.json");
-
-        TaskIO.write(tasks, new FileWriter("test.json"));
-        TaskIO.read(empty, new FileReader("test.json"));
-
-        System.out.println(tasks);
-        System.out.println(empty);
+        Viewable view = new MainMenuView();
+        Controller controller = new MainController(view, tasks);
+        controller.process(tasks);
     }
 }

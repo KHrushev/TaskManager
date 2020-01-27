@@ -1,6 +1,7 @@
-package ua.edu.sumdu.j2se.hrushev.tasks;
+package ua.edu.sumdu.j2se.hrushev.tasks.model;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.io.*;
 import java.lang.reflect.Type;
@@ -85,7 +86,7 @@ public class TaskIO {
             for(Task task : tasks) {
                 list.add(task);
             }
-            Gson gson = new Gson();
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
             writer.write(gson.toJson(list, tasks instanceof ArrayTaskList ? ArrayTaskList.class : LinkedTaskList.class));
         } catch (IOException e) {
             e.printStackTrace();
@@ -95,7 +96,7 @@ public class TaskIO {
     public static void read(AbstractTaskList tasks, Reader in) {
         AbstractTaskList list;
         Type type = tasks instanceof ArrayTaskList ? ArrayTaskList.class : LinkedTaskList.class;
-        Gson gson = new Gson();
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
         list = gson.fromJson(in, type);
         for(Task task : list) {
             tasks.add(task);

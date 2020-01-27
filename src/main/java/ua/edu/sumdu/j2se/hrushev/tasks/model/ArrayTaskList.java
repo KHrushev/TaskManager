@@ -1,4 +1,4 @@
-package ua.edu.sumdu.j2se.hrushev.tasks;
+package ua.edu.sumdu.j2se.hrushev.tasks.model;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -33,12 +33,19 @@ public class ArrayTaskList extends AbstractTaskList implements Cloneable, Iterab
                 int numMoved = size - i - 1;
                 if (numMoved > 0)
                     System.arraycopy(tasks, i+1, tasks, i, numMoved);
-                System.out.println(Arrays.toString(tasks));
                 tasks[--size] = null;
                 return true;
             }
         }
         return false;
+    }
+
+    public void clear() {
+        for (int i = 0; i < size; i++) {
+            tasks[i] = null;
+        }
+
+        size = 0;
     }
 
     public Task getTask(int index) {

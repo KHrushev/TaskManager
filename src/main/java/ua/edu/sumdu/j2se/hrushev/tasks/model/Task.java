@@ -1,4 +1,4 @@
-package ua.edu.sumdu.j2se.hrushev.tasks;
+package ua.edu.sumdu.j2se.hrushev.tasks.model;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -40,7 +40,7 @@ public class Task implements Cloneable, Serializable {
                 LocalDateTime end, int interval) throws IllegalArgumentException{
         this.title = title;
         try {
-            if (start == null || end == null || interval <= 0) throw new IllegalArgumentException();
+            if (start == null || end == null || interval <= 0 || end.isBefore(start)) throw new IllegalArgumentException();
             else {
                 this.start = start;
                 this.end = end;
@@ -48,9 +48,9 @@ public class Task implements Cloneable, Serializable {
                 this.time = start;
             }
         } catch (IllegalArgumentException iae) {
-            throw new IllegalArgumentException("Illegal Argument");
+            throw new IllegalArgumentException("Illegal Argument in Task Assignment.");
         }
-        isActive = isActive;
+        isActive = false;
     }
 
     /**
@@ -251,7 +251,7 @@ public class Task implements Cloneable, Serializable {
     @Override
     public int hashCode() {
         int hash = (isActive ? 1 : 0);
-        hash = 31 * hash + title.hashCode();
+        hash += 31 * hash + title.hashCode();
         hash += time != null ? 31 * time.hashCode() : 0;
         hash += start != null ? 31 * start.hashCode() : 0;
         hash += end != null ? 31 * end.hashCode() : 0;
