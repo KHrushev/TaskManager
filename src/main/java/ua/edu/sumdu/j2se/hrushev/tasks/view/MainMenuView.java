@@ -24,7 +24,11 @@ public class MainMenuView implements Viewable {
 
         try {
             System.out.println("Your Input:");
-            choice = Integer.parseInt(reader.readLine());
+            String stringChoice = reader.readLine();
+            while (stringChoice.equals("")){
+                stringChoice = reader.readLine();
+            }
+            choice = Integer.parseInt(stringChoice);
         } catch (IOException e) {
             e.printStackTrace();
         }

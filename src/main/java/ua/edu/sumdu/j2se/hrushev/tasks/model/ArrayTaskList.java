@@ -1,21 +1,21 @@
 package ua.edu.sumdu.j2se.hrushev.tasks.model;
 
 import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
+import java.util.*;
 import java.util.stream.Stream;
 
 public class ArrayTaskList extends AbstractTaskList implements Cloneable, Iterable<Task>, Serializable {
     private int size;
     private int capacity;
     private Task[] tasks = new Task[capacity];
+    private List<Observer> observers = new ArrayList<>();
 
     public void add(Task task) {
         if (size+1 >= capacity) {
             this.grow();
         }
         tasks[size++] = task;
+        notifyObservers();
     }
 
     private void grow() {
@@ -34,9 +34,11 @@ public class ArrayTaskList extends AbstractTaskList implements Cloneable, Iterab
                 if (numMoved > 0)
                     System.arraycopy(tasks, i+1, tasks, i, numMoved);
                 tasks[--size] = null;
+                notifyObservers();
                 return true;
             }
         }
+        notifyObservers();
         return false;
     }
 
@@ -46,6 +48,7 @@ public class ArrayTaskList extends AbstractTaskList implements Cloneable, Iterab
         }
 
         size = 0;
+        notifyObservers();
     }
 
     public Task getTask(int index) {
@@ -140,5 +143,22 @@ public class ArrayTaskList extends AbstractTaskList implements Cloneable, Iterab
                 }
             }
         };
+    }
+
+    @Override
+    public void addObserver(Observer o) {
+        observers.add(o);
+    }
+
+    @Override
+    public void removeObserver(Observer o) {
+        observers.remove(o);
+    }
+
+    @Override
+    public void notifyObservers() {
+        for (Observer obs: observers) {
+            obs.update(this);
+        }
     }
 }

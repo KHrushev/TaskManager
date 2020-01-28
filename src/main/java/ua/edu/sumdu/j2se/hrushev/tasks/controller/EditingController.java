@@ -46,12 +46,18 @@ public class EditingController extends Controller {
                         list.getTask(index).setTitle(((EditingView) this.view).getNewName());
                         break;
                     case TASK_START_TIME:
+                        LocalDateTime start = ((EditingView) this.view).getNewStart();
                         LocalDateTime end = list.getTask(index).getEndTime();
                         int interval = list.getTask(index).getRepeatInterval();
-                        list.getTask(index).setTime(((EditingView) this.view).getNewStart(), end, interval);
+                        if (list.getTask(index).isRepeated()) {
+                            list.getTask(index).setTime(start, end, interval);
+                        } else {
+                            list.getTask(index).setTime(start);
+                            list.getTask(index).setTime(null, null, 0);
+                        }
                         break;
                     case TASK_END_TIME:
-                        LocalDateTime start = list.getTask(index).getStartTime();
+                        start = list.getTask(index).getStartTime();
                         interval = list.getTask(index).getRepeatInterval();
                         list.getTask(index).setTime(start, ((EditingView) this.view).getNewEnd(), interval);
                         break;
@@ -70,7 +76,9 @@ public class EditingController extends Controller {
                     case TASK_ACTIVITY:
                         list.getTask(index).setActive( !(list.getTask(index).isActive()) );
                         System.out.println("\nActivity status toggled.\n");
+                        break;
                 }
+                list.notifyObservers();
             }
         }
         return 0;

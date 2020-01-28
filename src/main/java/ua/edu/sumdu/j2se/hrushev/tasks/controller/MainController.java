@@ -1,6 +1,7 @@
 package ua.edu.sumdu.j2se.hrushev.tasks.controller;
 
 import ua.edu.sumdu.j2se.hrushev.tasks.model.AbstractTaskList;
+import ua.edu.sumdu.j2se.hrushev.tasks.model.Observer;
 import ua.edu.sumdu.j2se.hrushev.tasks.view.*;
 
 import java.util.HashSet;
@@ -9,8 +10,9 @@ import java.util.Set;
 public class MainController extends Controller{
     private Viewable view;
     private Set<Controller> controllers = new HashSet<>();
+    private boolean startup = true;
 
-    public MainController(Viewable view, AbstractTaskList list) {
+    public MainController(Viewable view) {
         this.view = view;
         controllers.add(new AddController(new AddView()));
         controllers.add(new RemoveController(new RemoveView()));
@@ -19,15 +21,26 @@ public class MainController extends Controller{
         controllers.add(new TaskController(new TaskView()));
         controllers.add(new TasksController(new TasksView()));
         controllers.add(new SaveController());
+        controllers.add(new NotificationController());
     }
 
     @Override
     public int process(AbstractTaskList list) {
-        for (Controller c: controllers) {
-            if (c instanceof SaveController) {
-                ((SaveController) c).load(list);
+        if (startup) {
+            for (Controller c: controllers) {
+                if (c instanceof SaveController) {
+                    ((SaveController) c).load(list);
+                }
+            }
+            for (Controller c: controllers) {
+                if (c instanceof NotificationController) {
+                    list.addObserver((Observer) c);
+                    c.process(list);
+                }
             }
         }
+
+        startup = false;
 
         int choice = view.view(list);
 
