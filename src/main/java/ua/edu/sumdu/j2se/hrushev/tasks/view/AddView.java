@@ -9,7 +9,7 @@ import java.io.InputStreamReader;
 import java.time.LocalDateTime;
 
 public class AddView implements Viewable, DateGetter {
-    BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+    private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
     @Override
     public int view(AbstractTaskList list) {
@@ -18,7 +18,7 @@ public class AddView implements Viewable, DateGetter {
             String choice = reader.readLine();
             if (choice.toLowerCase().equals("repeatable")) {
                 return 1;
-            } else if (choice.toLowerCase().equals("single-use")) {
+            } else if (choice.toLowerCase().equals("single-use") || choice.toLowerCase().equals("single")) {
                 return 0;
             } else {
                 return -1;
