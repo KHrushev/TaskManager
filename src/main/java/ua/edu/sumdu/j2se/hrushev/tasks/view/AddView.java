@@ -61,10 +61,17 @@ public class AddView implements Viewable, DateGetter {
             LocalDateTime startDate = getDate();
 
             return new Task(name, startDate);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException | NumberFormatException e) {
+            System.out.println("You've entered incorrect information, try again.\n");
+            return this.singleTaskView();
         }
+    }
 
-        return null;
+    public void confirm() {
+        System.out.println("Task added successfully.\n");
+    }
+
+    public void error() {
+        System.out.println("You've entered incorrect data, try again.\n");
     }
 }

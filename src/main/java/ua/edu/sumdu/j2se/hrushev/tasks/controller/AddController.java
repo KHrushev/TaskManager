@@ -1,10 +1,14 @@
 package ua.edu.sumdu.j2se.hrushev.tasks.controller;
 
+import org.apache.log4j.Logger;
+import ua.edu.sumdu.j2se.hrushev.tasks.Main;
 import ua.edu.sumdu.j2se.hrushev.tasks.model.AbstractTaskList;
+import ua.edu.sumdu.j2se.hrushev.tasks.model.Task;
 import ua.edu.sumdu.j2se.hrushev.tasks.view.AddView;
 import ua.edu.sumdu.j2se.hrushev.tasks.view.Viewable;
 
 public class AddController extends Controller {
+    private final Logger logger = Logger.getLogger(Main.class);
     private Viewable view;
 
     public AddController(Viewable view) {
@@ -17,25 +21,33 @@ public class AddController extends Controller {
         if (this.view instanceof AddView) {
             if (choice == 0) {
                 try {
-                    list.add(((AddView) this.view).singleTaskView());
-                    System.out.println("\nTask added successfully.\n");
+                    Task task = ((AddView) this.view).singleTaskView();
+                    list.add(task);
+                    ((AddView) this.view).confirm();
                 } catch (IllegalArgumentException iae) {
-                    System.out.println("You've entered incorrect data for task, try again.\n");
+                    logger.error("Got IllegalArgumentException trying to add single-use task.");
+                    ((AddView) this.view).error();
                     this.process(list);
                 }
             } else if (choice == 1) {
                 try {
                     list.add( ((AddView) this.view).repeatableTaskView() );
-                    System.out.println("\nTask added successfully.\n");
+                    ((AddView) this.view).confirm();
                 } catch (IllegalArgumentException iae) {
-                    System.out.println("You've entered incorrect data for task, try again.\n");
+                    logger.error("Got IllegalArgumentException trying to add repeatable task.");
+                    ((AddView) this.view).error();
                     this.process(list);
                 }
             } else if (choice == -1) {
-                System.out.println("You've answered incorrectly, please, try again.\n");
+                ((AddView) this.view).error();
                 this.process(list);
             }
         }
+
+        list.notifyObservers();
+
+        logger.info("Added new task via Add Controller.");
+
         return 0;
     }
 }

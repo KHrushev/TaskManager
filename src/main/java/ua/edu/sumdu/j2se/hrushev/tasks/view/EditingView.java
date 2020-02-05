@@ -12,64 +12,77 @@ public class EditingView implements Viewable, DateGetter {
 
     @Override
     public int view(AbstractTaskList list) {
-        System.out.println("Enter Task index to edit:");
-
         try {
-            return Integer.parseInt(reader.readLine());
-        } catch (NumberFormatException nfe) {
-            System.out.println("You have to enter a number.\n");
+            int index;
+            System.out.println("Enter task index to edit:");
+            index = Integer.parseInt(reader.readLine());
+            if (index < 0 || index > list.size()-1) {
+                throw new IndexOutOfBoundsException();
+            } else return index;
+        } catch (IOException | IndexOutOfBoundsException | NumberFormatException e) {
+            System.out.println("\nYou've entered incorrect index, try again.\n");
             return this.view(list);
-        } catch (IOException e) {
-            e.printStackTrace();
         }
-
-        return -1;
     }
 
-    public int propertySelection(AbstractTaskList list) {
-        System.out.println("You can edit: task's name, starting time, activity status, ending time and interval, if the task is repeatable." +
-                " You can also convert single-use task into a repeatable one.\n" +
-                "Type in 'Cancel' to return to the main menu.\n");
-        System.out.println("Enter property to edit:");
+    public int propertySelection(AbstractTaskList list, int index) {
         try {
+            System.out.println("You can edit: task's name, starting time, activity status, ending time and interval, if the task is repeatable." +
+                    " You can also convert single-use task into a repeatable one.\n" +
+                    "Type in 'Cancel' to return to the main menu.\n");
+            System.out.println("Enter property to edit:");
+
             String property = reader.readLine();
+            int choice = -1;
+
             switch (property.toLowerCase()) {
                 case "name":
-                    return 0;
+                case "title":
+                    choice = 0;
+                    break;
                 case "starting time":
                 case "starting":
                 case "start":
-                    return 1;
+                    choice = 1;
+                    break;
                 case "ending time":
                 case "ending":
                 case "end":
-                    return 2;
+                    choice = 2;
+                    break;
                 case "interval":
-                    return 3;
+                    choice = 3;
+                    break;
                 case "convert":
-                    return 4;
+                    choice = 4;
+                    break;
                 case "activity status":
                 case "activity":
-                    return 5;
+                    choice = 5;
+                    break;
                 case "cancel":
                     break;
                 default:
-                    System.out.println("There is no such property. Try again.\n");
-                    return this.propertySelection(list);
+                    throw new IOException();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
-        return -1;
+            if (((choice == 2) || (choice == 3)) && !list.getTask(index).isRepeated()) {
+                throw new IOException();
+            }
+
+            return choice;
+        } catch (IOException | NumberFormatException e) {
+            System.out.println("There is no such property for given task. Try again.\n");
+            return this.propertySelection(list, index);
+        }
     }
 
     public String getNewName() {
         System.out.println("Enter new name:");
         try {
             return reader.readLine();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException | NumberFormatException e) {
+            System.out.println("You've entered incorrect name, try again.\n");
         }
 
         return ""; //This return statement is practically unreachable, because any string will do as a new name for a Task.
@@ -94,7 +107,7 @@ public class EditingView implements Viewable, DateGetter {
             if (interval <= 0) {
                 throw new IOException();
             }
-        } catch (IOException e) {
+        } catch (IOException | NumberFormatException e) {
             System.out.println("Incorrect input. Try again.\n");
             return getNewInterval();
         }

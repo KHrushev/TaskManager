@@ -18,7 +18,7 @@ public interface DateGetter {
         } catch (IOException e) {
             e.printStackTrace();
             return null;
-        } catch (DateTimeParseException parseException) {
+        } catch (DateTimeParseException | NumberFormatException parseException) {
             System.out.println("You've entered date/time incorrectly, try again.");
             return getDate();
         }

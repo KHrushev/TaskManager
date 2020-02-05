@@ -25,7 +25,7 @@ public class Task implements Cloneable, Serializable {
         } catch (IllegalArgumentException iae) {
             throw new IllegalArgumentException("Illegal Argument");
         }
-        isActive = false;
+        isActive = true;
     }
 
     /** Constructor for repeatable task.
@@ -50,7 +50,7 @@ public class Task implements Cloneable, Serializable {
         } catch (IllegalArgumentException iae) {
             throw new IllegalArgumentException("Illegal Argument in Task Assignment.");
         }
-        isActive = false;
+        isActive = true;
     }
 
     /**

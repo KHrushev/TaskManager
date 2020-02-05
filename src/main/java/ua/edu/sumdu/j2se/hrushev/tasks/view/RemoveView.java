@@ -16,13 +16,17 @@ public class RemoveView implements Viewable {
         try {
             System.out.println("Would you like to delete single task, or clear the list ? (Single/Clear)");
             stringChoice = reader.readLine();
+
             if (stringChoice.toLowerCase().equals("single")) {
                 choice = 0;
             } else if (stringChoice.toLowerCase().contains("clear")) {
                 choice = 1;
+            } else {
+                throw new IOException();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException | NumberFormatException e) {
+            System.out.println("You've entered incorrect choice, try again.\n");
+            return this.view(list);
         }
 
         return choice;
@@ -36,14 +40,17 @@ public class RemoveView implements Viewable {
             System.out.println("Enter task index to delete:");
             index = Integer.parseInt(reader.readLine());
             if (index >= list.size() || index < 0) {
-                System.out.println("You've entered incorrect index, try again.\n");
-
-                return removeSingle(list);
+                throw new IOException();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException | NumberFormatException e) {
+            System.out.println("You've entered incorrect index, try again.\n");
+            return removeSingle(list);
         }
 
         return index;
+    }
+
+    public void confirm() {
+        System.out.println("\nTask/Tasks deleted successfully.\n");
     }
 }

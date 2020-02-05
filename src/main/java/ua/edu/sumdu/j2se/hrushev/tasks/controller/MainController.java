@@ -1,5 +1,8 @@
 package ua.edu.sumdu.j2se.hrushev.tasks.controller;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import ua.edu.sumdu.j2se.hrushev.tasks.Main;
 import ua.edu.sumdu.j2se.hrushev.tasks.model.AbstractTaskList;
 import ua.edu.sumdu.j2se.hrushev.tasks.model.Observer;
 import ua.edu.sumdu.j2se.hrushev.tasks.view.*;
@@ -8,6 +11,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class MainController extends Controller{
+    private final Logger logger = LogManager.getLogger(Main.class);
+
     private Viewable view;
     private Set<Controller> controllers = new HashSet<>();
     private boolean startup = true;
@@ -21,7 +26,8 @@ public class MainController extends Controller{
         controllers.add(new TaskController(new TaskView()));
         controllers.add(new TasksController(new TasksView()));
         controllers.add(new SaveController());
-        controllers.add(new NotificationController());
+        controllers.add(new NotificationController(new NotificationView()));
+        logger.info("Controllers initialized.");
     }
 
     @Override
@@ -30,12 +36,16 @@ public class MainController extends Controller{
             for (Controller c: controllers) {
                 if (c instanceof SaveController) {
                     ((SaveController) c).load(list);
+                    logger.info("Save file loaded.");
                 }
             }
             for (Controller c: controllers) {
                 if (c instanceof NotificationController) {
                     list.addObserver((Observer) c);
                     c.process(list);
+                    logger.info("Notification controller launched.");
+                } else if (c instanceof CalendarController) {
+                    list.addObserver((Observer) c);
                 }
             }
         }
@@ -84,16 +94,20 @@ public class MainController extends Controller{
                 this.process(list);
                 break;
             case EXIT_ACTION:
-                System.out.println("Exiting App. . .");
                 for (Controller c : controllers) {
-                    if (c instanceof SaveController) c.process(list);
+                    if (c instanceof SaveController) {
+                        c.process(list);
+                        logger.info("Saving the list, then exiting the app.");
+                    }
                 }
                 System.exit(0);
             default:
-                System.out.println("Looks like you've entered incorrect character. Try again.");
+                logger.info("User entered incorrect action number, trying again.");
                 this.process(list);
                 break;
         }
+
+        logger.info("Finished app execution.");
 
         return 0;
     }

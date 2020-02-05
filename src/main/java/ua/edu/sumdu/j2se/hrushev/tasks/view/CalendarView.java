@@ -26,16 +26,21 @@ public class CalendarView implements Viewable, DateGetter {
         return getDate();
     }
 
-    public LocalDateTime getEndDate() {
+    public LocalDateTime getEndDate(LocalDateTime start) {
         System.out.println("Enter calendar end date: (yyyy-MM-dd HH:mm)");
-        return getDate();
+        LocalDateTime end = getDate();
+        while (end.isBefore(start) || end.equals(start)) {
+            System.out.println("End time has to be later than start time.");
+            end = getDate();
+        }
+        return end;
     }
 
     public void showCalendar(SortedMap<LocalDateTime, Set<Task>> calendar) {
         if (calendar.isEmpty()) {
             System.out.println("\nNo active tasks in entered range.\n");
         } else {
-            System.out.println(this.prettyMap(calendar));
+            System.out.println("\n" + this.prettyMap(calendar) + "\n");
         }
     }
 
