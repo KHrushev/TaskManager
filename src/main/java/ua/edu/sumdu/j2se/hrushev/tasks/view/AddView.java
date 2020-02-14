@@ -1,5 +1,7 @@
 package ua.edu.sumdu.j2se.hrushev.tasks.view;
 
+import org.apache.log4j.Logger;
+import ua.edu.sumdu.j2se.hrushev.tasks.Main;
 import ua.edu.sumdu.j2se.hrushev.tasks.model.AbstractTaskList;
 import ua.edu.sumdu.j2se.hrushev.tasks.model.Task;
 
@@ -9,6 +11,7 @@ import java.io.InputStreamReader;
 import java.time.LocalDateTime;
 
 public class AddView implements Viewable, DateGetter {
+    private final Logger logger = Logger.getLogger(Main.class);
     private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
     @Override
@@ -24,10 +27,9 @@ public class AddView implements Viewable, DateGetter {
                 return -1;
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.info("Got IOException in AddView while trying to determine whether user wants repeatable or single-use task.");
+            return this.view(list);
         }
-
-        return -1;
     }
 
     public Task repeatableTaskView() {
@@ -41,15 +43,17 @@ public class AddView implements Viewable, DateGetter {
             System.out.println("Task End Date and Time: (yyyy-MM-dd HH:mm)");
             LocalDateTime endDate = getDate();
 
-            System.out.println("Interval between Task executions: (in seconds)");
+            System.out.println("Interval between Task executions: (in minutes)");
             int interval = Integer.parseInt(reader.readLine());
+            interval = interval * 60;
 
-            return new Task(name, startDate, endDate, interval);
-        } catch (IOException e) {
-            e.printStackTrace();
+            Task task = new Task(name, startDate, endDate, interval);
+            this.confirm();
+            return task;
+        } catch (IOException | NumberFormatException e) {
+            this.error();
+            return this.singleTaskView();
         }
-
-        return null;
     }
 
     public Task singleTaskView() {
@@ -60,15 +64,17 @@ public class AddView implements Viewable, DateGetter {
             System.out.println("Task start Date and Time: (yyyy-MM-dd HH:mm)");
             LocalDateTime startDate = getDate();
 
-            return new Task(name, startDate);
+            Task task = new Task(name, startDate);
+            this.confirm();
+            return task;
         } catch (IOException | NumberFormatException e) {
-            System.out.println("You've entered incorrect information, try again.\n");
+            this.error();
             return this.singleTaskView();
         }
     }
 
     public void confirm() {
-        System.out.println("Task added successfully.\n");
+        System.out.println("Task created successfully.\n");
     }
 
     public void error() {

@@ -266,7 +266,7 @@ public class Task implements Cloneable, Serializable {
                 ", time=" + time +
                 ", start=" + start +
                 ", end=" + end +
-                ", interval=" + interval +
+                ", interval=" + interval/60 +
                 ", isActive=" + isActive +
                 '}';
     }

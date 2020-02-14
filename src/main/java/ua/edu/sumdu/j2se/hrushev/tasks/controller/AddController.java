@@ -23,23 +23,19 @@ public class AddController extends Controller {
                 try {
                     Task task = ((AddView) this.view).singleTaskView();
                     list.add(task);
-                    ((AddView) this.view).confirm();
                 } catch (IllegalArgumentException iae) {
                     logger.error("Got IllegalArgumentException trying to add single-use task.");
-                    ((AddView) this.view).error();
                     this.process(list);
                 }
             } else if (choice == 1) {
                 try {
-                    list.add( ((AddView) this.view).repeatableTaskView() );
-                    ((AddView) this.view).confirm();
+                    Task task = ((AddView) this.view).repeatableTaskView();
+                    list.add(task);
                 } catch (IllegalArgumentException iae) {
                     logger.error("Got IllegalArgumentException trying to add repeatable task.");
-                    ((AddView) this.view).error();
                     this.process(list);
                 }
             } else if (choice == -1) {
-                ((AddView) this.view).error();
                 this.process(list);
             }
         }
@@ -47,6 +43,11 @@ public class AddController extends Controller {
         list.notifyObservers();
 
         logger.info("Added new task via Add Controller.");
+
+        SaveController controller = new SaveController();
+        controller.process(list);
+
+        logger.info("Saved edited list to a save file.");
 
         return 0;
     }

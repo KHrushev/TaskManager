@@ -49,8 +49,4 @@ public class RemoveView implements Viewable {
 
         return index;
     }
-
-    public void confirm() {
-        System.out.println("\nTask/Tasks deleted successfully.\n");
-    }
 }

@@ -15,10 +15,7 @@ public interface DateGetter {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
             date = LocalDateTime.parse(reader.readLine(), formatter);
             return date;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        } catch (DateTimeParseException | NumberFormatException parseException) {
+        } catch (DateTimeParseException | NumberFormatException | IOException parseException) {
             System.out.println("You've entered date/time incorrectly, try again.");
             return getDate();
         }

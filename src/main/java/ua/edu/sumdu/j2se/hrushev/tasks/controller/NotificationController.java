@@ -30,7 +30,7 @@ public class NotificationController extends Controller implements Observer {
 
         exec.scheduleAtFixedRate(() -> {
             if (this.view instanceof NotificationView) this.view.view(finalList);
-        }, 0, 10, TimeUnit.SECONDS);
+        }, 0, 5, TimeUnit.MINUTES);
 
 
         return 0;

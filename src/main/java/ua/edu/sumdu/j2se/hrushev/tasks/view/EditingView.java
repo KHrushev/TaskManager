@@ -83,9 +83,8 @@ public class EditingView implements Viewable, DateGetter {
             return reader.readLine();
         } catch (IOException | NumberFormatException e) {
             System.out.println("You've entered incorrect name, try again.\n");
+            return this.getNewName();
         }
-
-        return ""; //This return statement is practically unreachable, because any string will do as a new name for a Task.
     }
 
     public LocalDateTime getNewStart() {
@@ -99,7 +98,7 @@ public class EditingView implements Viewable, DateGetter {
     }
 
     public int getNewInterval() {
-        System.out.println("Enter new interval:");
+        System.out.println("Enter new interval (in minutes):");
         int interval;
 
         try {
@@ -111,6 +110,8 @@ public class EditingView implements Viewable, DateGetter {
             System.out.println("Incorrect input. Try again.\n");
             return getNewInterval();
         }
+
+        interval = interval * 60;
 
         return interval;
     }

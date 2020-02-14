@@ -26,15 +26,18 @@ public class RemoveController extends Controller {
                 Task taskToDelete = list.getTask(index);
                 list.remove(taskToDelete);
 
-                ((RemoveView) this.view).confirm();
-
                 logger.info("Removed Task via Remove Controller.");
             } else if (choice == 1) {
                 list.clear();
-                ((RemoveView) this.view).confirm();
                 logger.info("List cleared via Remove Controller.");
             }
         }
+
+        SaveController controller = new SaveController();
+        controller.process(list);
+
+        logger.info("Saved edited list to a save file.");
+
         return 0;
     }
 }

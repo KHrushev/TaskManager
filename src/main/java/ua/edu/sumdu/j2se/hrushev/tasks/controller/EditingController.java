@@ -82,6 +82,11 @@ public class EditingController extends Controller {
 
         logger.info("Edited task via Editing Controller. Task index - " + index + ".");
 
+        SaveController controller = new SaveController();
+        controller.process(list);
+
+        logger.info("Saved edited list to a save file.");
+
         return 0;
     }
 }

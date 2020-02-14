@@ -12,7 +12,7 @@ public class TaskView implements Viewable {
 
     @Override
     public int view(AbstractTaskList list) {
-        int index = -1;
+        int index;
 
         if (list.size() == 0) {
             System.out.println("\nThere are to tasks to display.\n");
