@@ -19,14 +19,14 @@ public class MainController extends Controller{
 
     public MainController(Viewable view) {
         this.view = view;
-        controllers.add(new AddController(new AddView()));
-        controllers.add(new RemoveController(new RemoveView()));
-        controllers.add(new EditingController(new EditingView()));
-        controllers.add(new CalendarController(new CalendarView()));
-        controllers.add(new TaskController(new TaskView()));
-        controllers.add(new TasksController(new TasksView()));
+        controllers.add(new AddController());
+        controllers.add(new RemoveController());
+        controllers.add(new EditingController());
+        controllers.add(new CalendarController());
+        controllers.add(new TaskController());
+        controllers.add(new TasksController());
         controllers.add(new SaveController());
-        controllers.add(new NotificationController(new NotificationView()));
+        controllers.add(new NotificationController());
         logger.info("Controllers initialized.");
     }
 

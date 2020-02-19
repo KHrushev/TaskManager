@@ -19,7 +19,7 @@ public class AddView implements Viewable, DateGetter {
         try {
             System.out.println("Repeatable/Single-use ?");
             String choice = reader.readLine();
-            if (choice.toLowerCase().equals("repeatable")) {
+            if (choice.toLowerCase().equals("repeatable") || choice.toLowerCase().equals("repeat")) {
                 return 1;
             } else if (choice.toLowerCase().equals("single-use") || choice.toLowerCase().equals("single")) {
                 return 0;
@@ -47,12 +47,16 @@ public class AddView implements Viewable, DateGetter {
             int interval = Integer.parseInt(reader.readLine());
             interval = interval * 60;
 
+            if (endDate.equals(startDate) || endDate.isBefore(startDate)) {
+                throw new IOException("Incorrect start-end date input.");
+            }
+
             Task task = new Task(name, startDate, endDate, interval);
             this.confirm();
             return task;
         } catch (IOException | NumberFormatException e) {
             this.error();
-            return this.singleTaskView();
+            return this.repeatableTaskView();
         }
     }
 
@@ -73,11 +77,11 @@ public class AddView implements Viewable, DateGetter {
         }
     }
 
-    public void confirm() {
+    private void confirm() {
         System.out.println("Task created successfully.\n");
     }
 
-    public void error() {
+    private void error() {
         System.out.println("You've entered incorrect data, try again.\n");
     }
 }

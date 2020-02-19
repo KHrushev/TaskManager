@@ -12,7 +12,6 @@ import java.util.Set;
 import java.util.SortedMap;
 
 public class CalendarView implements Viewable, DateGetter {
-    BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
     @Override
     public int view(AbstractTaskList list) {
