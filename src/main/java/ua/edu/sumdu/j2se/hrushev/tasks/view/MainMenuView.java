@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class MainMenuView implements Viewable {
-    final Logger logger = LogManager.getLogger(Main.class);
+    private final Logger logger = LogManager.getLogger(Main.class);
 
     @Override
     public int view(AbstractTaskList list) {
