@@ -1,21 +1,27 @@
 package ua.edu.sumdu.j2se.hrushev.tasks;
 
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
+import ua.edu.sumdu.j2se.hrushev.tasks.controller.Controller;
+import ua.edu.sumdu.j2se.hrushev.tasks.controller.MainController;
+import ua.edu.sumdu.j2se.hrushev.tasks.model.AbstractTaskList;
+import ua.edu.sumdu.j2se.hrushev.tasks.model.ArrayTaskList;
+import ua.edu.sumdu.j2se.hrushev.tasks.view.MainMenuView;
+import ua.edu.sumdu.j2se.hrushev.tasks.view.Viewable;
+
 public class Main {
-    public static void main(String[] args) throws CloneNotSupportedException {
-        Task task1 = new Task("some1", 81);
-        Task task2 = task1.clone();
-        Task task3 = new Task("some2", 21);
-        Task task4 = new Task("some3", 85);
-        Task task5 = new Task("some4", 81);
+    private static Logger logger = Logger.getLogger(Main.class);
 
+    public static void main(String[] args) {
+        PropertyConfigurator.configure("log4j.properties");
 
-        ArrayTaskList list = new ArrayTaskList();
-        list.add(task1);
-        list.add(task2);
-        list.add(task3);
-        list.add(task4);
-        list.add(task5);
+        AbstractTaskList tasks = new ArrayTaskList();
 
-        System.out.println(list.incoming(40, 90));
+        Viewable view = new MainMenuView();
+        Controller controller = new MainController(view);
+
+        logger.info("App started. Main menu to be displayed.");
+
+        controller.process(tasks);
     }
 }

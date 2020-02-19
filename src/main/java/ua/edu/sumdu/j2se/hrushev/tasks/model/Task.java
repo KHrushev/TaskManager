@@ -1,10 +1,13 @@
-package ua.edu.sumdu.j2se.hrushev.tasks;
+package ua.edu.sumdu.j2se.hrushev.tasks.model;
 
-public class Task implements Cloneable{
+import java.io.Serializable;
+import java.time.LocalDateTime;
+
+public class Task implements Cloneable, Serializable {
     private String title;
-    private int time;
-    private int start;
-    private int end;
+    private LocalDateTime time;
+    private LocalDateTime start;
+    private LocalDateTime end;
     private int interval;
     private boolean isActive;
 
@@ -13,13 +16,16 @@ public class Task implements Cloneable{
      * @param time time sets the time of task execution.
      */
 
-    public Task(String title, int time) throws IllegalArgumentException {
-        if (time < 0) {
-            throw new IllegalArgumentException("Time cannot be of negative value.");
-        }
+    public Task(String title, LocalDateTime time) throws IllegalArgumentException{
         this.title = title;
-        this.time = time;
-        isActive = false;
+        try {
+            if (time == null) {
+                throw new IllegalArgumentException();
+            } else this.time = time;
+        } catch (IllegalArgumentException iae) {
+            throw new IllegalArgumentException("Illegal Argument");
+        }
+        isActive = true;
     }
 
     /** Constructor for repeatable task.
@@ -30,13 +36,21 @@ public class Task implements Cloneable{
      * @param interval sets interval between task repeats.
      */
 
-    public Task(String title, int start,
-                int end, int interval) {
+    public Task(String title, LocalDateTime start,
+                LocalDateTime end, int interval) throws IllegalArgumentException{
         this.title = title;
-        this.start = start;
-        this.end = end;
-        this.interval = interval;
-        isActive = false;
+        try {
+            if (start == null || end == null || interval <= 0 || end.isBefore(start)) throw new IllegalArgumentException();
+            else {
+                this.start = start;
+                this.end = end;
+                this.interval = interval;
+                this.time = start;
+            }
+        } catch (IllegalArgumentException iae) {
+            throw new IllegalArgumentException("Illegal Argument in Task Assignment.");
+        }
+        isActive = true;
     }
 
     /**
@@ -78,7 +92,7 @@ public class Task implements Cloneable{
      * return start if task is repeatable.
      */
 
-    public int getTime() {
+    public LocalDateTime getTime() {
         if (interval == 0) {
             return time;
         } else {
@@ -92,7 +106,7 @@ public class Task implements Cloneable{
      * @param time sets new task time.
      */
 
-    public void setTime(int time) {
+    public void setTime(LocalDateTime time) {
         if (interval != 0) {
             this.interval = 0;
             this.start = time;
@@ -110,7 +124,7 @@ public class Task implements Cloneable{
      * @param interval sets new task repeat interval
      */
 
-    public void setTime(int start, int end, int interval) {
+    public void setTime(LocalDateTime start, LocalDateTime end, int interval) {
         this.start = start;
         this.end = end;
         this.interval = interval;
@@ -122,12 +136,8 @@ public class Task implements Cloneable{
      * return start time of repeatable task execution.
      */
 
-    public int getStartTime() {
-        if (interval == 0) {
-            return time;
-        } else {
-            return start;
-        }
+    public LocalDateTime getStartTime() {
+        return interval == 0 ? time : start;
     }
 
     /**
@@ -136,7 +146,7 @@ public class Task implements Cloneable{
      *  return end time of repeatable task execution.
      */
 
-    public int getEndTime() {
+    public LocalDateTime getEndTime() {
         if (interval == 0) {
             return time;
         } else {
@@ -184,28 +194,29 @@ public class Task implements Cloneable{
      * return time if current time is less than task execution time.
      */
 
-    public int nextTimeAfter(int current) {
-        if (((current >= this.time && interval == 0) || !this.isActive)
-                || (current >= this.end && this.interval != 0)) {
-            return -1;
-        } else {
+    public LocalDateTime nextTimeAfter(LocalDateTime current) {
+        if (this.isActive()) {
             if (interval > 0) {
-                if (current + interval > end) {
-                    return -1;
-                } else if (current >= start) {
-                    int tempStart = start;
-
-                    while (current >= tempStart) {
-                        tempStart += interval;
-                    }
-
-                    return tempStart;
+                if (current.isAfter(end)) {
+                    return null;
                 } else {
-                    return start;
+                    if (current.isBefore(start)) {
+                        return start;
+                    } else {
+                        LocalDateTime nextAfter = start;
+
+                        while (nextAfter.isBefore(current.plusSeconds(1))) {
+                            nextAfter = nextAfter.plusSeconds(interval);
+                        }
+
+                        return nextAfter.isAfter(end) ? null : nextAfter;
+                    }
                 }
             } else {
-                return time;
+                return current.isBefore(time) ? time : null;
             }
+        } else {
+            return null;
         }
     }
 
@@ -235,16 +246,16 @@ public class Task implements Cloneable{
 
     /**
      * hashCode override.
-     * @return
+     * @return hashCode
      */
     @Override
     public int hashCode() {
-        int hash = (isActive ? 1: 0);
-        hash = 31 * hash + title.hashCode();
-        hash = 31 * hash + time;
-        hash = 31 * hash + start;
-        hash = 31 * hash + end;
-        hash = 31 * hash + interval;
+        int hash = (isActive ? 1 : 0);
+        hash += 31 * hash + title.hashCode();
+        hash += time != null ? 31 * time.hashCode() : 0;
+        hash += start != null ? 31 * start.hashCode() : 0;
+        hash += end != null ? 31 * end.hashCode() : 0;
+        hash += 31 * interval;
         return hash;
     }
 
@@ -255,7 +266,7 @@ public class Task implements Cloneable{
                 ", time=" + time +
                 ", start=" + start +
                 ", end=" + end +
-                ", interval=" + interval +
+                ", interval=" + interval/60 +
                 ", isActive=" + isActive +
                 '}';
     }

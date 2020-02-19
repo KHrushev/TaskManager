@@ -1,6 +1,6 @@
-package ua.edu.sumdu.j2se.hrushev.tasks;
+package ua.edu.sumdu.j2se.hrushev.tasks.model;
 
-import static ua.edu.sumdu.j2se.hrushev.tasks.ListTypes.types.*;
+import static ua.edu.sumdu.j2se.hrushev.tasks.model.ListTypes.types.*;
 
 public class TaskListFactory {
     public static AbstractTaskList createTaskList(ListTypes.types type) {

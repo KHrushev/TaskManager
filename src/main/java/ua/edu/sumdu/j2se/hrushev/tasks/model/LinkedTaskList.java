@@ -1,4 +1,4 @@
-package ua.edu.sumdu.j2se.hrushev.tasks;
+package ua.edu.sumdu.j2se.hrushev.tasks.model;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -8,6 +8,7 @@ public class LinkedTaskList extends AbstractTaskList implements Cloneable, Itera
     private int size;
     private Node first;
     private Node last;
+    private List<Observer> observers = new ArrayList<>();
 
     public void add(Task task) {
         if (size == 0) {
@@ -15,6 +16,8 @@ public class LinkedTaskList extends AbstractTaskList implements Cloneable, Itera
         } else {
             linkLast(task);
         }
+
+        notifyObservers();
     }
 
     private void linkFirst(Task task) {
@@ -52,6 +55,7 @@ public class LinkedTaskList extends AbstractTaskList implements Cloneable, Itera
             for (Node x = first; x != null; x = x.next) {
                 if (x.item == null) {
                     unlink(x);
+                    notifyObservers();
                     return true;
                 }
             }
@@ -59,11 +63,13 @@ public class LinkedTaskList extends AbstractTaskList implements Cloneable, Itera
             for(Node x = first; x != null; x = x.next) {
                 if (task.equals(x.item)) {
                     unlink(x);
+                    notifyObservers();
                     return true;
                 }
             }
         }
 
+        notifyObservers();
         return false;
     }
 
@@ -87,6 +93,20 @@ public class LinkedTaskList extends AbstractTaskList implements Cloneable, Itera
 
         x.item = null;
         size--;
+    }
+
+    public void clear() {
+        for (Node x = first; x!= null;) {
+            Node next = x.next;
+            x.item = null;
+            x.prev = null;
+            x.next = null;
+            x = next;
+        }
+
+        first = last = null;
+        size = 0;
+        notifyObservers();
     }
 
     public Task getTask(int index) {
@@ -264,5 +284,22 @@ public class LinkedTaskList extends AbstractTaskList implements Cloneable, Itera
                 }
             }
         };
+    }
+
+    @Override
+    public void addObserver(Observer o) {
+        observers.add(o);
+    }
+
+    @Override
+    public void removeObserver(Observer o) {
+        observers.remove(o);
+    }
+
+    @Override
+    public void notifyObservers() {
+        for (Observer o: observers) {
+            o.update(this);
+        }
     }
 }
