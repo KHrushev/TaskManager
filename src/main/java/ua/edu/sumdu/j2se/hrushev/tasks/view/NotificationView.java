@@ -6,15 +6,7 @@ import ua.edu.sumdu.j2se.hrushev.tasks.model.Task;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class NotificationView implements Viewable {
     private Logger logger = Logger.getLogger(String.valueOf(Main.class));
