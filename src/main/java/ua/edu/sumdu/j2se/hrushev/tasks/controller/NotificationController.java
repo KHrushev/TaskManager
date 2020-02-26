@@ -24,8 +24,9 @@ public class NotificationController extends Controller implements Observer {
 
         ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
 
-        exec.scheduleAtFixedRate(() -> view.view(finalList), 0, 5, TimeUnit.MINUTES);
+        exec.scheduleAtFixedRate(() -> view.taskNotification(finalList), 0, 1, TimeUnit.SECONDS);
 
+        exec.scheduleAtFixedRate(() -> view.view(finalList), 0, 5, TimeUnit.MINUTES);
 
         return 0;
     }

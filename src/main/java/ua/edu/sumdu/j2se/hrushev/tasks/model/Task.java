@@ -213,7 +213,7 @@ public class Task implements Cloneable, Serializable {
                     }
                 }
             } else {
-                return current.isBefore(time) ? time : null;
+                return time.isAfter(current) ? time : null;
             }
         } else {
             return null;

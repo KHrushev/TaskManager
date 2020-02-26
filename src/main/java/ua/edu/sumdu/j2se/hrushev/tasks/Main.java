@@ -6,13 +6,30 @@ import ua.edu.sumdu.j2se.hrushev.tasks.controller.Controller;
 import ua.edu.sumdu.j2se.hrushev.tasks.controller.MainController;
 import ua.edu.sumdu.j2se.hrushev.tasks.model.AbstractTaskList;
 import ua.edu.sumdu.j2se.hrushev.tasks.model.ArrayTaskList;
+import ua.edu.sumdu.j2se.hrushev.tasks.model.Task;
 import ua.edu.sumdu.j2se.hrushev.tasks.view.MainMenuView;
 import ua.edu.sumdu.j2se.hrushev.tasks.view.Viewable;
+
+import java.time.LocalDateTime;
+
 
 public class Main {
     private static Logger logger = Logger.getLogger(Main.class);
 
     public static void main(String[] args) {
+//        LocalDateTime now = LocalDateTime.now().withNano(0);
+//        LocalDateTime later = now.plusSeconds(1);
+//
+//        Task task = new Task("name", now.minusHours(2), now.plusHours(2), 10);
+//
+//        while (true) {
+//            LocalDateTime next = task.nextTimeAfter(now);
+//            if (task.nextTimeAfter(now).isBefore(later.plusSeconds(1))) System.out.println("asdasdasd");
+//            if (now.isAfter(later)) break;
+//        }
+//
+//        System.out.println("FINISHED");
+
         PropertyConfigurator.configure("log4j.properties");
 
         AbstractTaskList tasks = new ArrayTaskList();

@@ -6,7 +6,15 @@ import ua.edu.sumdu.j2se.hrushev.tasks.model.Task;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class NotificationView implements Viewable {
     private Logger logger = Logger.getLogger(String.valueOf(Main.class));
@@ -16,8 +24,10 @@ public class NotificationView implements Viewable {
         for (Task task: list) {
             LocalDateTime now = LocalDateTime.now();
             LocalDateTime halfHourLater = now.plusMinutes(30);
+            LocalDateTime secondsLater = now.plusSeconds(1);
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-            if (task != null && task.isActive() && task.nextTimeAfter(now) != null && task.nextTimeAfter(now).isBefore(halfHourLater)) {
+
+            if (task != null && task.isActive() && task.nextTimeAfter(now) != null && task.nextTimeAfter(now).isBefore(halfHourLater) && !(task.nextTimeAfter(now).isBefore(secondsLater))) {
                 System.out.println("\n---NOTIFICATION---");
                 System.out.println("Task " + task.getTitle() + " is supposed to be done at " + task.nextTimeAfter(now).format(formatter));
                 System.out.println("---NOTIFICATION---\n");
@@ -28,5 +38,17 @@ public class NotificationView implements Viewable {
         }
 
         return 0;
+    }
+
+    public void taskNotification(AbstractTaskList list) {
+        for (Task task: list) {
+            LocalDateTime now = LocalDateTime.now().withNano(0);
+            LocalDateTime later = now.plusSeconds(2);
+
+            if (task != null && task.isActive() && task.nextTimeAfter(now) != null && task.nextTimeAfter(now).isBefore(later)) {
+                NotificationThread thread = new NotificationThread(task, now);
+                thread.start();
+            }
+        }
     }
 }
